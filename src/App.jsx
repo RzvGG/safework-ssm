@@ -1661,15 +1661,144 @@ function TestRunner({ test, onClose }) {
   )
 }
 
+function EditMaterialModal({ draft, setDraft, onSave, onClose }) {
+  return (
+    <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.65)',zIndex:1000,display:'flex',alignItems:'center',justifyContent:'center',padding:16}}>
+      <div style={{background:C.white,borderRadius:C.r,width:'100%',maxWidth:680,maxHeight:'88vh',display:'flex',flexDirection:'column',overflow:'hidden',boxShadow:'0 20px 60px rgba(0,0,0,0.3)'}}>
+        <div style={{padding:'16px 20px',borderBottom:`1px solid ${C.line}`,display:'flex',justifyContent:'space-between',alignItems:'center',flexShrink:0}}>
+          <div style={{fontSize:15,fontWeight:700,color:C.t0}}>✏️ Editare material</div>
+          <button onClick={onClose} style={{background:'none',border:'none',fontSize:20,color:C.t2,cursor:'pointer'}}>✕</button>
+        </div>
+        <div style={{flex:1,overflowY:'auto',padding:20,display:'flex',flexDirection:'column',gap:14}}>
+          <div>
+            <div style={{fontSize:11,color:C.t2,fontWeight:700,marginBottom:5}}>TITLU</div>
+            <input value={draft.titlu} onChange={e=>setDraft({...draft,titlu:e.target.value})}
+              style={{width:'100%',padding:'10px 12px',background:C.bg,border:`1px solid ${C.line}`,borderRadius:C.rs,fontSize:13,color:C.t0,outline:'none',boxSizing:'border-box'}} />
+          </div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:10}}>
+            <div>
+              <div style={{fontSize:11,color:C.t2,fontWeight:700,marginBottom:5}}>TIP</div>
+              <select value={draft.tip} onChange={e=>setDraft({...draft,tip:e.target.value})}
+                style={{width:'100%',padding:'10px 12px',background:C.bg,border:`1px solid ${C.line}`,borderRadius:C.rs,fontSize:13,color:C.t0,outline:'none'}}>
+                {['Prezentare','Video','Document'].map(t=><option key={t}>{t}</option>)}
+              </select>
+            </div>
+            <div>
+              <div style={{fontSize:11,color:C.t2,fontWeight:700,marginBottom:5}}>DURATĂ</div>
+              <input value={draft.durata} onChange={e=>setDraft({...draft,durata:e.target.value})}
+                style={{width:'100%',padding:'10px 12px',background:C.bg,border:`1px solid ${C.line}`,borderRadius:C.rs,fontSize:13,color:C.t0,outline:'none',boxSizing:'border-box'}} />
+            </div>
+            <div>
+              <div style={{fontSize:11,color:C.t2,fontWeight:700,marginBottom:5}}>VERSIUNE</div>
+              <input value={draft.ver} onChange={e=>setDraft({...draft,ver:e.target.value})}
+                style={{width:'100%',padding:'10px 12px',background:C.bg,border:`1px solid ${C.line}`,borderRadius:C.rs,fontSize:13,color:C.t0,outline:'none',boxSizing:'border-box'}} />
+            </div>
+          </div>
+          <div style={{fontSize:12,fontWeight:700,color:C.t0,marginTop:4}}>Capitole ({draft.capitole.length})</div>
+          {draft.capitole.map(([titlu,continut],i) => (
+            <div key={i} style={{padding:'12px 14px',background:C.bg,borderRadius:C.rs,border:`1px solid ${C.line}`}}>
+              <div style={{display:'flex',gap:8,marginBottom:8}}>
+                <input value={titlu} onChange={e=>{const c=[...draft.capitole];c[i]=[e.target.value,c[i][1]];setDraft({...draft,capitole:c})}}
+                  style={{flex:1,padding:'8px 10px',background:C.white,border:`1px solid ${C.line}`,borderRadius:C.rx,fontSize:12,fontWeight:700,color:C.primary,outline:'none'}} />
+                <button onClick={()=>{const c=draft.capitole.filter((_,ci)=>ci!==i);setDraft({...draft,capitole:c})}}
+                  style={{background:'none',border:`1px solid ${C.red}44`,borderRadius:C.rx,color:C.red,fontSize:12,cursor:'pointer',padding:'0 10px'}}>🗑</button>
+              </div>
+              <textarea value={continut} rows={3} onChange={e=>{const c=[...draft.capitole];c[i]=[c[i][0],e.target.value];setDraft({...draft,capitole:c})}}
+                style={{width:'100%',padding:'8px 10px',background:C.white,border:`1px solid ${C.line}`,borderRadius:C.rx,fontSize:12,color:C.t1,outline:'none',resize:'vertical',boxSizing:'border-box',lineHeight:1.6}} />
+            </div>
+          ))}
+          <Btn label='+ Adaugă capitol' color={C.gray} outline onClick={()=>setDraft({...draft,capitole:[...draft.capitole,['Capitol nou','']]})} />
+        </div>
+        <div style={{padding:'13px 20px',borderTop:`1px solid ${C.line}`,display:'flex',justifyContent:'space-between',gap:10,flexShrink:0}}>
+          <Btn label='Anulează' color={C.gray} outline onClick={onClose} />
+          <Btn label='💾 Salvează materialul' color={C.primary} onClick={onSave} />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function EditTestModal({ draft, setDraft, onSave, onClose }) {
+  const setQ = (i, patch) => { const q=[...draft.intrebari]; q[i]={...q[i],...patch}; setDraft({...draft,intrebari:q}) }
+  return (
+    <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.65)',zIndex:1000,display:'flex',alignItems:'center',justifyContent:'center',padding:16}}>
+      <div style={{background:C.white,borderRadius:C.r,width:'100%',maxWidth:680,maxHeight:'88vh',display:'flex',flexDirection:'column',overflow:'hidden',boxShadow:'0 20px 60px rgba(0,0,0,0.3)'}}>
+        <div style={{padding:'16px 20px',borderBottom:`1px solid ${C.line}`,display:'flex',justifyContent:'space-between',alignItems:'center',flexShrink:0}}>
+          <div style={{fontSize:15,fontWeight:700,color:C.t0}}>✏️ Editare test</div>
+          <button onClick={onClose} style={{background:'none',border:'none',fontSize:20,color:C.t2,cursor:'pointer'}}>✕</button>
+        </div>
+        <div style={{flex:1,overflowY:'auto',padding:20,display:'flex',flexDirection:'column',gap:14}}>
+          <div>
+            <div style={{fontSize:11,color:C.t2,fontWeight:700,marginBottom:5}}>TITLU TEST</div>
+            <input value={draft.titlu} onChange={e=>setDraft({...draft,titlu:e.target.value})}
+              style={{width:'100%',padding:'10px 12px',background:C.bg,border:`1px solid ${C.line}`,borderRadius:C.rs,fontSize:13,color:C.t0,outline:'none',boxSizing:'border-box'}} />
+          </div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:10,alignItems:'end'}}>
+            <div>
+              <div style={{fontSize:11,color:C.t2,fontWeight:700,marginBottom:5}}>PRAG PROMOVARE (%)</div>
+              <input type='number' min='0' max='100' value={draft.prag} onChange={e=>setDraft({...draft,prag:parseInt(e.target.value)||0})}
+                style={{width:'100%',padding:'10px 12px',background:C.bg,border:`1px solid ${C.line}`,borderRadius:C.rs,fontSize:13,color:C.t0,outline:'none',boxSizing:'border-box'}} />
+            </div>
+            <div>
+              <div style={{fontSize:11,color:C.t2,fontWeight:700,marginBottom:5}}>TIP</div>
+              <select value={draft.tip} onChange={e=>setDraft({...draft,tip:e.target.value})}
+                style={{width:'100%',padding:'10px 12px',background:C.bg,border:`1px solid ${C.line}`,borderRadius:C.rs,fontSize:13,color:C.t0,outline:'none'}}>
+                {['La angajare','Periodic','Suplimentar'].map(t=><option key={t}>{t}</option>)}
+              </select>
+            </div>
+            <label style={{display:'flex',gap:8,alignItems:'center',cursor:'pointer',padding:'10px 0'}}>
+              <input type='checkbox' checked={draft.activ} onChange={e=>setDraft({...draft,activ:e.target.checked})} style={{accentColor:C.primary,width:16,height:16}} />
+              <span style={{fontSize:13,fontWeight:600,color:C.t0}}>Test activ</span>
+            </label>
+          </div>
+          <div style={{fontSize:12,fontWeight:700,color:C.t0,marginTop:4}}>Întrebări ({draft.intrebari.length}) — bifați răspunsul corect</div>
+          {draft.intrebari.map((q,i) => (
+            <div key={i} style={{padding:'12px 14px',background:C.bg,borderRadius:C.rs,border:`1px solid ${C.line}`}}>
+              <div style={{display:'flex',gap:8,marginBottom:8}}>
+                <input value={q.q} placeholder='Textul întrebării...' onChange={e=>setQ(i,{q:e.target.value})}
+                  style={{flex:1,padding:'8px 10px',background:C.white,border:`1px solid ${C.line}`,borderRadius:C.rx,fontSize:12,fontWeight:700,color:C.t0,outline:'none'}} />
+                <button onClick={()=>setDraft({...draft,intrebari:draft.intrebari.filter((_,qi)=>qi!==i)})}
+                  style={{background:'none',border:`1px solid ${C.red}44`,borderRadius:C.rx,color:C.red,fontSize:12,cursor:'pointer',padding:'0 10px'}}>🗑</button>
+              </div>
+              <div style={{display:'flex',flexDirection:'column',gap:6}}>
+                {q.a.map((opt,oi) => (
+                  <div key={oi} style={{display:'flex',gap:8,alignItems:'center'}}>
+                    <input type='radio' checked={q.c===oi} onChange={()=>setQ(i,{c:oi})} style={{accentColor:C.green,width:15,height:15,flexShrink:0,cursor:'pointer'}} title='Răspuns corect' />
+                    <input value={opt} placeholder={`Varianta ${oi+1}`} onChange={e=>{const a=[...q.a];a[oi]=e.target.value;setQ(i,{a})}}
+                      style={{flex:1,padding:'7px 10px',background:C.white,border:`1px solid ${q.c===oi?C.green:C.line}`,borderRadius:C.rx,fontSize:12,color:C.t1,outline:'none'}} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+          <Btn label='+ Adaugă întrebare' color={C.gray} outline onClick={()=>setDraft({...draft,intrebari:[...draft.intrebari,{q:'',a:['','',''],c:0}]})} />
+        </div>
+        <div style={{padding:'13px 20px',borderTop:`1px solid ${C.line}`,display:'flex',justifyContent:'space-between',gap:10,flexShrink:0}}>
+          <Btn label='Anulează' color={C.gray} outline onClick={onClose} />
+          <Btn label='💾 Salvează testul' color={C.primary} onClick={onSave} />
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function ModMateriale() {
-  const [tab,setTab]       = useState('materiale')
-  const [viewer,setViewer] = useState(null)
-  const [runner,setRunner] = useState(null)
+  const [tab,setTab]           = useState('materiale')
+  const [mats,setMats]         = useState(MATERIALE_DB)
+  const [tests,setTests]       = useState(TESTE_DB)
+  const [viewer,setViewer]     = useState(null)
+  const [runner,setRunner]     = useState(null)
+  const [editMat,setEditMat]   = useState(null)
+  const [editTest,setEditTest] = useState(null)
   const tipIcon = t => ({Video:'🎬',Prezentare:'📊',Document:'📄'}[t]||'📁')
+  const saveMat  = () => { setMats(mats.map(m => m.id===editMat.id ? editMat : m)); setEditMat(null) }
+  const saveTest = () => { setTests(tests.map(t => t.id===editTest.id ? editTest : t)); setEditTest(null) }
   return (
     <div style={{display:'flex',flexDirection:'column',gap:14}}>
       {viewer && <MaterialViewer mat={viewer} onClose={()=>setViewer(null)} />}
       {runner && <TestRunner test={runner} onClose={()=>setRunner(null)} />}
+      {editMat && <EditMaterialModal draft={editMat} setDraft={setEditMat} onSave={saveMat} onClose={()=>setEditMat(null)} />}
+      {editTest && <EditTestModal draft={editTest} setDraft={setEditTest} onSave={saveTest} onClose={()=>setEditTest(null)} />}
       <div style={{display:'flex',justifyContent:'space-between',flexWrap:'wrap',gap:10}}>
         <div><h2 style={{fontSize:18,fontWeight:900,color:C.t0}}>Materiale & Teste</h2><div style={{fontSize:12,color:C.t2,marginTop:2}}>Conținut de instruire SSM-SU · încărcat de furnizor, actualizabil de beneficiar</div></div>
         <Btn label='+ Încarcă material' color={C.primary} />
@@ -1684,14 +1813,14 @@ function ModMateriale() {
           <table style={{width:'100%',borderCollapse:'collapse'}}>
             <thead><THead cols={['Material','Tip','Durată','Sursă','Versiune','']} /></thead>
             <tbody>
-              {MATERIALE_DB.map(m => (
+              {mats.map(m => (
                 <TRow key={m.id}>
                   <TD style={{fontWeight:600,color:C.t0}}>{tipIcon(m.tip)} {m.titlu}</TD>
                   <TD>{m.tip}</TD>
                   <TD style={{color:C.t2}}>{m.durata}</TD>
                   <TD><Chip label={m.sursa} color={m.sursa==='Furnizor'?C.purple:C.teal} sm /></TD>
                   <TD style={{fontFamily:'monospace',fontSize:11,color:C.t2}}>{m.ver}</TD>
-                  <TD><div style={{display:'flex',gap:6}}><Btn label='▶ Vizualizează' color={C.primary} sm onClick={()=>setViewer(m)} /><Btn label='✏️' color={C.gray} outline sm /></div></TD>
+                  <TD><div style={{display:'flex',gap:6}}><Btn label='▶ Vizualizează' color={C.primary} sm onClick={()=>setViewer(m)} /><Btn label='✏️' color={C.gray} outline sm onClick={()=>setEditMat({...m,capitole:m.capitole.map(c=>[...c])})} /></div></TD>
                 </TRow>
               ))}
             </tbody>
@@ -1703,14 +1832,14 @@ function ModMateriale() {
           <table style={{width:'100%',borderCollapse:'collapse'}}>
             <thead><THead cols={['Test','Întrebări','Prag','Tip','Status','']} /></thead>
             <tbody>
-              {TESTE_DB.map(t => (
+              {tests.map(t => (
                 <TRow key={t.id}>
                   <TD style={{fontWeight:600,color:C.t0}}>{t.titlu}</TD>
                   <TD style={{color:C.t2}}>{t.intrebari.length} întrebări</TD>
                   <TD><Chip label={t.prag+'%'} color={C.amber} sm /></TD>
                   <TD>{t.tip}</TD>
                   <TD><Chip label={t.activ?'Activ':'Inactiv'} color={t.activ?C.teal:C.gray} sm /></TD>
-                  <TD><div style={{display:'flex',gap:6}}><Btn label='▶ Rulează testul' color={C.primary} sm onClick={()=>setRunner(t)} /><Btn label='✏️' color={C.gray} outline sm /></div></TD>
+                  <TD><div style={{display:'flex',gap:6}}><Btn label='▶ Rulează testul' color={C.primary} sm onClick={()=>setRunner(t)} /><Btn label='✏️' color={C.gray} outline sm onClick={()=>setEditTest({...t,intrebari:t.intrebari.map(q=>({...q,a:[...q.a]}))})} /></div></TD>
                 </TRow>
               ))}
             </tbody>
