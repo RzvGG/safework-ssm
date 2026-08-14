@@ -1733,7 +1733,7 @@ export default function App() {
   const width = useWidth()
   const isMobile = width < 900
 
-  const handleLogin    = (u) => { setUser(u); setScreen(u.isNew ? 'wizard' : 'app') }
+  const handleLogin    = (u) => { setUser(u); setScreen(appCfg ? 'app' : 'wizard') }
   const handleRegister = (u) => { setUser(u); setScreen('wizard') }
   const handleWizard   = (cfg) => { setAppCfg(cfg); setScreen('app') }
   const handleLogout   = ()  => { setUser(null); setAppCfg(null); setScreen('login') }
