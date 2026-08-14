@@ -123,6 +123,28 @@ const ANGAJATI_DEMO = [
   { id:5, name:'Petre Dumitrescu', dept:'Mentenanță', post:'Electrician',   email:'',               tel:'0755999000', trainOk:true,  medOk:true },
 ]
 
+const ANGAJATI_FINANCIAR = [
+  { id:1, name:'Andreea Marinescu', dept:'Front Office',    post:'Consilier clienți',     email:'andreea.marinescu@banca.ro', tel:'0721111222', trainOk:false, medOk:true },
+  { id:2, name:'Radu Stancu',       dept:'Credite',         post:'Analist credite',       email:'radu.stancu@banca.ro',       tel:'0722333444', trainOk:true,  medOk:true },
+  { id:3, name:'Cristina Dobre',    dept:'Operațiuni',      post:'Casier',                email:'cristina.dobre@banca.ro',    tel:'0733555666', trainOk:true,  medOk:false },
+  { id:4, name:'Bogdan Ilie',       dept:'IT & Securitate', post:'Administrator sisteme', email:'bogdan.ilie@banca.ro',       tel:'0744777888', trainOk:false, medOk:true },
+  { id:5, name:'Ioana Petrescu',    dept:'Resurse Umane',   post:'Referent RU',           email:'ioana.petrescu@banca.ro',    tel:'0755999000', trainOk:true,  medOk:true },
+]
+
+const ANGAJATI_HORECA = [
+  { id:1, name:'Vasile Antonescu',  dept:'Bucătărie',  post:'Bucătar șef',      email:'',                    tel:'0721111222', trainOk:false, medOk:true },
+  { id:2, name:'Georgiana Radu',    dept:'Bucătărie',  post:'Ajutor bucătar',   email:'',                    tel:'0722333444', trainOk:true,  medOk:true },
+  { id:3, name:'Alin Moraru',       dept:'Sală',       post:'Ospătar',          email:'alin@restaurant.ro',  tel:'0733555666', trainOk:true,  medOk:false },
+  { id:4, name:'Diana Enache',      dept:'Sală',       post:'Ospătar',          email:'',                    tel:'0744777888', trainOk:false, medOk:true },
+  { id:5, name:'Marius Tudose',     dept:'Bar',        post:'Barman',           email:'marius@restaurant.ro',tel:'0755999000', trainOk:true,  medOk:true },
+]
+
+const getAngajati = (ind) => {
+  if (ind === 'financiar' || ind === 'it') return ANGAJATI_FINANCIAR
+  if (ind === 'horeca') return ANGAJATI_HORECA
+  return ANGAJATI_DEMO
+}
+
 /* ═══════════════════════════════════════
    BAZA LEGISLATIVĂ MONITORIZATĂ
 ═══════════════════════════════════════ */
@@ -933,8 +955,9 @@ function ModalSemnatura({ angajat, onSave, onClose }) {
 /* ═══════════════════════════════════════
    APP MODULES
 ═══════════════════════════════════════ */
-function ModDashboard({ firma, modules, instruiriCfg }) {
+function ModDashboard({ firma, modules, instruiriCfg, ind }) {
   const actives = TOATE_INSTRUIRILE.filter(i => (instruiriCfg[i.id]||{}).active)
+  const ANG = getAngajati(ind)
   return (
     <div style={{display:'flex',flexDirection:'column',gap:18}}>
       <div style={{padding:'18px 22px',background:`linear-gradient(135deg,${C.primaryBg},${C.tealBg})`,border:`1px solid ${C.primary}33`,borderRadius:C.r}}>
@@ -987,7 +1010,7 @@ function ModDashboard({ firma, modules, instruiriCfg }) {
         <Card>
           <div style={{padding:'13px 18px',borderBottom:`1px solid ${C.line}`,fontSize:13,fontWeight:700,color:C.t0}}>⚠ Necesită atenție</div>
           <div style={{padding:16,display:'flex',flexDirection:'column',gap:8}}>
-            {['Ion Popescu — instruire periodică scadentă (16 Apr)','Elena Gheorghe — control medical expirat','Dan Constantin — EIP expirat'].map((m,i) => (
+            {[`${ANG[0].name} — instruire periodică scadentă (16 Apr)`,`${ANG[2].name} — control medical expirat`,`${ANG[3].name} — instruire IIG nesemnată`].map((m,i) => (
               <div key={i} style={{padding:'10px 12px',background:C.amberBg,borderRadius:C.rx,fontSize:12,color:C.t1,borderLeft:`3px solid ${C.amber}`}}>• {m}</div>
             ))}
           </div>
@@ -1062,7 +1085,8 @@ function ModDocumente({ modules }) {
   )
 }
 
-function ModInstruiri({ instruiriCfg, modules }) {
+function ModInstruiri({ instruiriCfg, modules, ind }) {
+  const ANG = getAngajati(ind)
   const [sel,setSel]       = useState(null)
   const [sigModal,setSigModal] = useState(null)
   const [semnate,setSemnate]   = useState({})
@@ -1078,7 +1102,7 @@ function ModInstruiri({ instruiriCfg, modules }) {
           <h2 style={{fontSize:18,fontWeight:900,color:C.t0}}>{instr.label}</h2>
           <div style={{fontSize:12,color:C.t2,marginTop:3}}>📋 {instr.baza}</div>
         </div>
-        {ANGAJATI_DEMO.map((a,i) => {
+        {ANG.map((a,i) => {
           const key = `${sel}_${a.name}`; const ok = semnate[key]
           return (
             <Card key={i} style={{marginBottom:8}}>
@@ -1120,7 +1144,7 @@ function ModInstruiri({ instruiriCfg, modules }) {
             {list.map((i,idx) => {
               const d = 23+idx; const t = 28; const p = Math.round(d/t*100)
               const col = p===100?C.teal:p>=80?C.primary:p>=60?C.amber:C.red
-              const pending = ANGAJATI_DEMO.filter((_,ai) => !semnate[`${active.indexOf(i)}_${ANGAJATI_DEMO[ai].name}`]).length
+              const pending = ANG.filter((_,ai) => !semnate[`${active.indexOf(i)}_${ANG[ai].name}`]).length
               return (
                 <Card key={idx} onClick={()=>setSel(active.indexOf(i))} style={{padding:18,cursor:'pointer',marginBottom:10}}>
                   <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:12}}>
@@ -1145,25 +1169,74 @@ function ModInstruiri({ instruiriCfg, modules }) {
   )
 }
 
-function ModMedicina() {
-  const data = [
-    {id:1,name:'Ion Popescu',dept:'Producție',tip:'Periodică',ef:'10 Ian 2024',exp:'10 Ian 2025',apt:true},
-    {id:2,name:'Maria Ionescu',dept:'Producție',tip:'Periodică',ef:'15 Feb 2024',exp:'15 Feb 2025',apt:true},
-    {id:3,name:'Dan Constantin',dept:'Depozit',tip:'Angajare',ef:'01 Mar 2023',exp:'01 Mar 2024',apt:false},
-    {id:4,name:'Elena Gheorghe',dept:'Birou',tip:'Periodică',ef:'20 Mar 2024',exp:'20 Mar 2025',apt:true},
-    {id:5,name:'Petre Dumitrescu',dept:'Mentenanță',tip:'Periodică',ef:'05 Apr 2024',exp:'05 Apr 2025',apt:true},
-  ]
+function ModMedicina({ ind }) {
+  const ANG = getAngajati(ind)
+  const [rows,setRows] = useState(() => ANG.map((a,i) => ({
+    id:a.id, name:a.name, dept:a.dept,
+    tip: i===2 ? 'Angajare' : 'Periodică',
+    ef:  ['10 Ian 2024','15 Feb 2024','01 Mar 2023','20 Mar 2024','05 Apr 2024'][i],
+    exp: ['10 Ian 2025','15 Feb 2025','01 Mar 2024','20 Mar 2025','05 Apr 2025'][i],
+    apt: i!==2,
+  })))
   const [filter,setFilter] = useState('toti')
-  const filtered = filter==='toti'?data:filter==='apt'?data.filter(m=>m.apt):data.filter(m=>!m.apt)
+  const [edit,setEdit]     = useState(null)
+  const filtered = filter==='toti'?rows:filter==='apt'?rows.filter(m=>m.apt):rows.filter(m=>!m.apt)
+  const saveEdit = () => { setRows(rows.map(r => r.id===edit.id ? edit : r)); setEdit(null) }
   return (
     <div style={{display:'flex',flexDirection:'column',gap:14}}>
+      {edit && (
+        <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.65)',zIndex:1000,display:'flex',alignItems:'center',justifyContent:'center',padding:16}}>
+          <div style={{background:C.white,borderRadius:C.r,width:'100%',maxWidth:420,overflow:'hidden',boxShadow:'0 20px 60px rgba(0,0,0,0.3)'}}>
+            <div style={{padding:'16px 20px',borderBottom:`1px solid ${C.line}`,display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+              <div><div style={{fontSize:15,fontWeight:700,color:C.t0}}>🩺 Editare aviz medical</div><div style={{fontSize:11,color:C.t2,marginTop:2}}>{edit.name} · {edit.dept}</div></div>
+              <button onClick={()=>setEdit(null)} style={{background:'none',border:'none',fontSize:20,color:C.t2,cursor:'pointer'}}>✕</button>
+            </div>
+            <div style={{padding:20,display:'flex',flexDirection:'column',gap:12}}>
+              <div>
+                <div style={{fontSize:11,color:C.t2,fontWeight:700,marginBottom:5}}>TIP EXAMEN</div>
+                <select value={edit.tip} onChange={e=>setEdit({...edit,tip:e.target.value})}
+                  style={{width:'100%',padding:'10px 12px',background:C.bg,border:`1px solid ${C.line}`,borderRadius:C.rs,fontSize:13,color:C.t0,outline:'none'}}>
+                  {['Angajare','Periodică','Reluare activitate','Supraveghere specială'].map(t=><option key={t}>{t}</option>)}
+                </select>
+              </div>
+              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}>
+                <div>
+                  <div style={{fontSize:11,color:C.t2,fontWeight:700,marginBottom:5}}>DATA EFECTUĂRII</div>
+                  <input value={edit.ef} onChange={e=>setEdit({...edit,ef:e.target.value})}
+                    style={{width:'100%',padding:'10px 12px',background:C.bg,border:`1px solid ${C.line}`,borderRadius:C.rs,fontSize:13,color:C.t0,outline:'none',boxSizing:'border-box'}} />
+                </div>
+                <div>
+                  <div style={{fontSize:11,color:C.t2,fontWeight:700,marginBottom:5}}>VALABIL PÂNĂ</div>
+                  <input value={edit.exp} onChange={e=>setEdit({...edit,exp:e.target.value})}
+                    style={{width:'100%',padding:'10px 12px',background:C.bg,border:`1px solid ${C.line}`,borderRadius:C.rs,fontSize:13,color:C.t0,outline:'none',boxSizing:'border-box'}} />
+                </div>
+              </div>
+              <div>
+                <div style={{fontSize:11,color:C.t2,fontWeight:700,marginBottom:5}}>REZULTAT AVIZ</div>
+                <div style={{display:'flex',gap:8}}>
+                  {[[true,'✓ Apt',C.teal],[false,'✗ Inapt / Expirat',C.red]].map(([val,l,cul]) => (
+                    <div key={l} onClick={()=>setEdit({...edit,apt:val})}
+                      style={{flex:1,padding:'10px',borderRadius:C.rs,border:`2px solid ${edit.apt===val?cul:C.line}`,background:edit.apt===val?cul+'0D':C.white,cursor:'pointer',textAlign:'center',fontSize:12,fontWeight:700,color:edit.apt===val?cul:C.t2}}>
+                      {l}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div style={{padding:'13px 20px',borderTop:`1px solid ${C.line}`,display:'flex',justifyContent:'space-between',gap:10}}>
+              <Btn label='Anulează' color={C.gray} outline onClick={()=>setEdit(null)} />
+              <Btn label='💾 Salvează' color={C.primary} onClick={saveEdit} />
+            </div>
+          </div>
+        </div>
+      )}
       <div style={{display:'flex',justifyContent:'space-between',flexWrap:'wrap',gap:10}}>
         <div><h2 style={{fontSize:18,fontWeight:900,color:C.t0}}>Medicină muncii</h2><div style={{fontSize:12,color:C.t2,marginTop:2}}>Evidența avizelor medicale</div></div>
         <Btn label='+ Înregistrare' color={C.primary} />
       </div>
-      {data.filter(m=>!m.apt).length>0 && <Alert type='error'>{data.filter(m=>!m.apt).length} angajat(ți) cu aviz medical expirat — acces restricționat recomandat</Alert>}
+      {rows.filter(m=>!m.apt).length>0 && <Alert type='error'>{rows.filter(m=>!m.apt).length} angajat(ți) cu aviz medical expirat — acces restricționat recomandat</Alert>}
       <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:10}}>
-        {[['Total',data.length,C.t0],['Apți',data.filter(m=>m.apt).length,C.teal],['Expirați',data.filter(m=>!m.apt).length,C.red]].map(([l,v,c]) => (
+        {[['Total',rows.length,C.t0],['Apți',rows.filter(m=>m.apt).length,C.teal],['Expirați',rows.filter(m=>!m.apt).length,C.red]].map(([l,v,c]) => (
           <Card key={l} style={{padding:'14px 16px',textAlign:'center'}}><div style={{fontSize:22,fontWeight:900,color:c}}>{v}</div><div style={{fontSize:11,color:C.t2,marginTop:3}}>{l}</div></Card>
         ))}
       </div>
@@ -1184,7 +1257,7 @@ function ModMedicina() {
                 <TD style={{color:C.t2,fontSize:12}}>{m.ef}</TD>
                 <TD style={{color:m.apt?C.t2:C.red,fontWeight:m.apt?400:700}}>{m.exp}</TD>
                 <TD><Chip label={m.apt?'✓ Apt':'✗ Expirat'} color={m.apt?C.teal:C.red} /></TD>
-                <TD><Btn label='Editează' color={C.primary} outline sm /></TD>
+                <TD><Btn label='Editează' color={C.primary} outline sm onClick={()=>setEdit({...m})} /></TD>
               </TRow>
             ))}
           </tbody>
@@ -1194,7 +1267,8 @@ function ModMedicina() {
   )
 }
 
-function ModEmitere() {
+function ModEmitere({ ind }) {
+  const ANG = getAngajati(ind)
   const [tip,setTip]         = useState(null)
   const [angajat,setAngajat] = useState('')
   const [done,setDone]       = useState(false)
@@ -1232,7 +1306,7 @@ function ModEmitere() {
               <div style={{fontSize:11,color:C.t2,marginBottom:5,fontWeight:600}}>Angajat</div>
               <select value={angajat} onChange={e=>setAngajat(e.target.value)} style={{width:'100%',padding:'9px 12px',background:C.bg,border:`1px solid ${C.line}`,borderRadius:C.rs,fontSize:13,color:C.t1,outline:'none'}}>
                 <option value=''>Selectează...</option>
-                {ANGAJATI_DEMO.map(a => <option key={a.id}>{a.name}</option>)}
+                {ANG.map(a => <option key={a.id}>{a.name}</option>)}
               </select>
             </div>
             <div>
@@ -1718,7 +1792,7 @@ function ModLegislatie() {
                   <TD style={{color:C.t2,fontSize:11,whiteSpace:'nowrap'}}>{l.publicat}</TD>
                   <TD style={{color:C.t2,fontSize:11}}>{l.modif}</TD>
                   <TD><Chip label='✓ La zi' color={C.teal} sm /></TD>
-                  <TD><Btn label='📖 Text oficial' color={C.primary} outline sm /></TD>
+                  <TD><Btn label='📖 Text oficial' color={C.primary} outline sm onClick={()=>window.open('https://www.google.com/search?q='+encodeURIComponent('"'+l.act+'" site:legislatie.just.ro'),'_blank')} /></TD>
                 </TRow>
               ))}
             </tbody>
@@ -1948,12 +2022,12 @@ function AppShell({ user, appCfg, onLogout }) {
 
   const renderTab = () => {
     switch(tab) {
-      case 'dashboard': return <ModDashboard firma={firma} modules={modules} instruiriCfg={instrCfg} />
+      case 'dashboard': return <ModDashboard firma={firma} modules={modules} instruiriCfg={instrCfg} ind={ind} />
       case 'documente': return <ModDocumente modules={modules} />
-      case 'instruiri': return <ModInstruiri instruiriCfg={instrCfg} modules={modules} />
+      case 'instruiri': return <ModInstruiri instruiriCfg={instrCfg} modules={modules} ind={ind} />
       case 'materiale': return <ModMateriale />
-      case 'medicina':  return <ModMedicina />
-      case 'emitere':   return <ModEmitere />
+      case 'medicina':  return <ModMedicina ind={ind} />
+      case 'emitere':   return <ModEmitere ind={ind} />
       case 'rapoarte':  return <ModRapoarte />
       case 'arhiva':    return <ModArhiva />
       case 'structura': return <ModStructura />
