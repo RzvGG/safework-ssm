@@ -1661,6 +1661,7 @@ function AppShell({ user, appCfg, onLogout }) {
     {id:'setari',label:'Setări',icon:'⚙️'},
   ]
   const [helpdesk,setHelpdesk] = useState(false)
+  const [userMenu,setUserMenu] = useState(false)
 
   const renderTab = () => {
     switch(tab) {
@@ -1701,7 +1702,30 @@ function AppShell({ user, appCfg, onLogout }) {
               <div style={{fontSize:10,color:C.primary}}>{firma?.nume || 'Firma dvs.'}</div>
             </div>
           )}
-          <Ava name={user?.name || 'Manager SSM'} size={32} />
+          <div style={{position:'relative'}}>
+            <div onClick={()=>setUserMenu(!userMenu)} style={{cursor:'pointer',borderRadius:'50%',border:`2px solid ${userMenu?C.primary:'transparent'}`,transition:'border-color .15s'}}>
+              <Ava name={user?.name || 'Manager SSM'} size={32} />
+            </div>
+            {userMenu && (
+              <>
+                <div onClick={()=>setUserMenu(false)} style={{position:'fixed',inset:0,zIndex:998}} />
+                <div style={{position:'absolute',top:42,right:0,background:C.white,border:`1px solid ${C.line}`,borderRadius:C.rs,boxShadow:'0 8px 30px rgba(0,0,0,0.15)',minWidth:200,zIndex:999,overflow:'hidden'}}>
+                  <div style={{padding:'12px 16px',borderBottom:`1px solid ${C.line}`,background:'#F8FAFC'}}>
+                    <div style={{fontSize:13,fontWeight:700,color:C.t0}}>{user?.name || 'Manager SSM'}</div>
+                    <div style={{fontSize:11,color:C.t2,marginTop:2}}>{user?.email || ''}</div>
+                  </div>
+                  <button onClick={()=>{setTab('setari');setUserMenu(false)}} style={{width:'100%',padding:'11px 16px',background:'none',border:'none',textAlign:'left',fontSize:13,color:C.t1,cursor:'pointer',display:'flex',alignItems:'center',gap:8}}
+                    onMouseEnter={e=>e.currentTarget.style.background='#F8FAFC'} onMouseLeave={e=>e.currentTarget.style.background='none'}>
+                    ⚙️ Setări
+                  </button>
+                  <button onClick={onLogout} style={{width:'100%',padding:'11px 16px',background:'none',border:'none',borderTop:`1px solid ${C.line}`,textAlign:'left',fontSize:13,color:C.red,fontWeight:600,cursor:'pointer',display:'flex',alignItems:'center',gap:8}}
+                    onMouseEnter={e=>e.currentTarget.style.background=C.redBg} onMouseLeave={e=>e.currentTarget.style.background='none'}>
+                    🔴 Deconectare
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
       {helpdesk && <HelpdeskModal onClose={()=>setHelpdesk(false)} />}
