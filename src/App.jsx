@@ -124,6 +124,115 @@ const ANGAJATI_DEMO = [
 ]
 
 /* ═══════════════════════════════════════
+   BAZA LEGISLATIVĂ MONITORIZATĂ
+═══════════════════════════════════════ */
+const LEGISLATIE_DB = [
+  { act:'Legea 319/2006',   domeniu:'SSM — legea cadru',                    publicat:'MO 646/2006',  modif:'Text consolidat cu modificările ulterioare', status:'la_zi' },
+  { act:'HG 1425/2006',     domeniu:'Norme metodologice L.319/2006',        publicat:'MO 882/2006',  modif:'HG 955/2010 · HG 259/2022',                  status:'la_zi' },
+  { act:'HG 259/2022',      domeniu:'Digitalizarea fișei de instruire',     publicat:'MO 189/2022',  modif:'—',                                           status:'la_zi' },
+  { act:'Legea 307/2006',   domeniu:'Apărarea împotriva incendiilor (SU)',  publicat:'MO 633/2006',  modif:'Republicată MO 297/2019',                     status:'la_zi' },
+  { act:'OMAI 712/2005',    domeniu:'Instruirea în situații de urgență',    publicat:'MO 599/2005',  modif:'OMAI 786/2005',                               status:'la_zi' },
+  { act:'Legea 481/2004',   domeniu:'Protecția civilă',                     publicat:'MO 1094/2004', modif:'Republicată MO 554/2008',                     status:'la_zi' },
+  { act:'HG 971/2006',      domeniu:'Semnalizare de securitate',            publicat:'MO 683/2006',  modif:'Text consolidat',                             status:'la_zi' },
+  { act:'HG 1048/2006',     domeniu:'Echipament individual de protecție',   publicat:'MO 722/2006',  modif:'—',                                           status:'la_zi' },
+  { act:'HG 1146/2006',     domeniu:'Echipamente de muncă',                 publicat:'MO 815/2006',  modif:'—',                                           status:'la_zi' },
+  { act:'HG 1091/2006',     domeniu:'Cerințe minime locuri de muncă',       publicat:'MO 739/2006',  modif:'—',                                           status:'la_zi' },
+  { act:'HG 355/2007',      domeniu:'Supravegherea sănătății lucrătorilor', publicat:'MO 332/2007',  modif:'HG 1169/2011',                                status:'la_zi' },
+  { act:'HG 493/2006',      domeniu:'Expunerea la zgomot',                  publicat:'MO 380/2006',  modif:'—',                                           status:'la_zi' },
+  { act:'HG 1218/2006',     domeniu:'Agenți chimici la locul de muncă',     publicat:'MO 845/2006',  modif:'HG 584/2018',                                 status:'la_zi' },
+  { act:'OUG 96/2003',      domeniu:'Protecția maternității la muncă',      publicat:'MO 750/2003',  modif:'Legea 25/2004',                               status:'la_zi' },
+  { act:'HG 600/2007',      domeniu:'Protecția tinerilor la muncă',         publicat:'MO 473/2007',  modif:'—',                                           status:'la_zi' },
+  { act:'Legea 346/2002',   domeniu:'Asigurare accidente de muncă',         publicat:'MO 454/2002',  modif:'Republicată MO 251/2014',                     status:'la_zi' },
+  { act:'Legea 53/2003',    domeniu:'Codul muncii (cap. SSM)',              publicat:'MO 72/2003',   modif:'Republicată, actualizată permanent',          status:'la_zi' },
+]
+
+/* ═══════════════════════════════════════
+   CONȚINUT MATERIALE DE INSTRUIRE
+═══════════════════════════════════════ */
+const MATERIALE_DB = [
+  { id:1, titlu:'IIG — Instructaj introductiv-general', tip:'Prezentare', durata:'8 ore (min. legal)', sursa:'Furnizor', ver:'v2.1', capitole:[
+    ['1. Cadrul legislativ SSM','Legea 319/2006 — legea securității și sănătății în muncă: obligațiile angajatorului (art. 6–13) și ale lucrătorilor (art. 22–23). HG 1425/2006 — normele metodologice de aplicare. Consecințele nerespectării: sancțiuni contravenționale ITM 3.000–10.000 lei, răspundere penală în caz de accidente grave.'],
+    ['2. Drepturile și obligațiile lucrătorilor','Drepturi: echipament de protecție gratuit, instruire pe timpul programului, oprirea lucrului în caz de pericol grav și iminent (art. 20-21). Obligații: utilizarea corectă a mașinilor și EIP, comunicarea imediată a oricărei situații periculoase, cooperarea cu angajatorul (art. 22–23).'],
+    ['3. Riscuri generale în unitate','Riscuri mecanice (tăiere, strivire, lovire), electrice (electrocutare), chimice (intoxicare, arsuri), ergonomice (manipulare manuală, poziții vicioase), psihosociale (stres, oboseală). Zonele cu risc ridicat și specific din unitate.'],
+    ['4. Echipamentul individual de protecție','HG 1048/2006: EIP se acordă gratuit de angajator, utilizarea este obligatorie, întreținerea și verificarea periodică. Refuzul utilizării EIP = abatere disciplinară.'],
+    ['5. Semnalizarea de securitate','HG 971/2006: panouri de interdicție (rotund, roșu), avertizare (triunghi, galben), obligare (rotund, albastru), salvare/prim ajutor (dreptunghi, verde), stingere incendiu (roșu). Semnale acustice și luminoase.'],
+    ['6. Noțiuni de prim ajutor','Alertarea 112, evaluarea stării victimei, poziția laterală de siguranță, oprirea hemoragiilor, primul ajutor la arsuri. Amplasarea truselor de prim ajutor (Ord. MS 427/2002).'],
+    ['7. Situații de urgență','Legea 307/2006 (incendii) și Legea 481/2004 (protecție civilă): comportamentul la incendiu, cutremur, alarmă. Căile de evacuare, punctul de adunare, interzicerea folosirii liftului la incendiu.'],
+  ]},
+  { id:2, titlu:'ILM — Instructaj la locul de muncă', tip:'Prezentare', durata:'min. 8 ore', sursa:'Furnizor', ver:'v1.4', capitole:[
+    ['1. Riscurile specifice postului','Prezentarea riscurilor identificate în Evaluarea de Riscuri pentru postul respectiv: echipamente utilizate, substanțe, mediu de lucru, factori de risc individuali.'],
+    ['2. Instrucțiuni proprii de securitate','Instrucțiunile proprii SSM elaborate pentru activitățile desfășurate la locul de muncă respectiv (art. 98–104 HG 1425/2006). Prevederile aplicabile din fișa postului.'],
+    ['3. Utilizarea echipamentelor de muncă','HG 1146/2006: pornire/oprire în siguranță, dispozitive de protecție (interzis a fi îndepărtate), verificări înainte de utilizare, raportarea defecțiunilor.'],
+    ['4. Manipularea manuală a maselor','HG 1051/2006: limite de greutate, tehnica corectă de ridicare (spatele drept, genunchii îndoiți), utilizarea mijloacelor ajutătoare.'],
+    ['5. Demonstrații practice','Demonstrarea practică a operațiunilor de lucru în siguranță — obligatorie conform art. 93 HG 1425/2006. Verificarea însușirii cunoștințelor înainte de începerea efectivă a lucrului.'],
+  ]},
+  { id:3, titlu:'IP — Instructaj periodic', tip:'Document', durata:'min. 2 ore', sursa:'Beneficiar', ver:'v3.0', capitole:[
+    ['1. Reîmprospătarea cunoștințelor','Recapitularea instrucțiunilor proprii, a riscurilor specifice și a măsurilor de prevenire. Interval: 1–6 luni conform funcției (max. 6 luni personal TESA, max. 3 luni lucrători direct productivi — stabilit prin programul de instruire).'],
+    ['2. Modificări legislative și organizatorice','Prezentarea modificărilor legislative apărute de la ultimul instructaj, modificări de tehnologie sau organizare care afectează securitatea.'],
+    ['3. Analiza evenimentelor','Lecții învățate din accidente, incidente și near miss-uri din unitate sau din industrie. Măsuri corective adoptate.'],
+    ['4. Verificarea cunoștințelor','Test de evaluare periodică — consemnat în fișa de instruire conform Anexa 11 HG 1425/2006.'],
+  ]},
+  { id:4, titlu:'IS — Instructaj suplimentar', tip:'Prezentare', durata:'min. 8 ore', sursa:'Furnizor', ver:'v1.0', capitole:[
+    ['1. Cazurile în care se efectuează','Art. 108 HG 1425/2006: la reluarea activității după accident de muncă, la absență peste 30 zile lucrătoare, la modificarea tehnologiei/echipamentelor, la introducerea unui echipament nou, la modificarea instrucțiunilor proprii, la executarea unor lucrări speciale.'],
+    ['2. Conținutul instructajului','Riscurile noi introduse de schimbare, instrucțiunile actualizate, demonstrații practice cu noile echipamente/tehnologii.'],
+    ['3. Consemnarea','Se consemnează în fișa de instruire individuală cu semnătura celui instruit și a celui care a efectuat instruirea.'],
+  ]},
+  { id:5, titlu:'SU — Prevenirea și stingerea incendiilor', tip:'Video', durata:'2 ore', sursa:'Furnizor', ver:'v2.0', capitole:[
+    ['1. Cadrul legal','Legea 307/2006 privind apărarea împotriva incendiilor și OMAI 712/2005 privind instruirea în domeniul situațiilor de urgență. Obligațiile salariaților la locul de muncă.'],
+    ['2. Clasele de incendiu și stingătoarele','Clasa A (solide), B (lichide), C (gaze), D (metale), F (uleiuri de gătit). Alegerea stingătorului corect: pulbere (ABC), CO2 (echipamente electrice), spumă (AB). Utilizare: la baza flăcării, în direcția vântului.'],
+    ['3. Comportamentul în caz de incendiu','Alarmare (112 + alarmă internă), evacuare imediată pe traseele marcate, interzicerea liftului, deplasarea aplecată în fum, punctul de adunare, apelul nominal.'],
+    ['4. Prevenirea incendiilor','Fumatul doar în locuri amenajate, verificarea instalațiilor electrice, depozitarea corectă a materialelor inflamabile, menținerea liberă a căilor de evacuare și a accesului la hidranți/stingătoare.'],
+    ['5. Exercițiile de evacuare','Obligatorii periodic conform planului de intervenție. Rolurile echipei de primă intervenție.'],
+  ]},
+]
+
+/* ═══════════════════════════════════════
+   TESTE DE EVALUARE (întrebări reale)
+═══════════════════════════════════════ */
+const TESTE_DB = [
+  { id:1, titlu:'Test evaluare la angajare (IIG)', prag:80, tip:'La angajare', activ:true, intrebari:[
+    { q:'Care este scopul Legii 319/2006?', a:['Reglementarea salarizării','Instituirea de măsuri pentru promovarea îmbunătățirii securității și sănătății în muncă','Organizarea timpului de lucru'], c:1 },
+    { q:'Echipamentul individual de protecție (EIP) se acordă:', a:['Contra cost, prin reținere pe salariu','Gratuit, de către angajator','Doar personalului de conducere'], c:1 },
+    { q:'În caz de pericol grav și iminent, lucrătorul:', a:['Își continuă activitatea până la noi dispoziții','Poate opri lucrul și părăsi imediat zona periculoasă','Așteaptă dispoziții scrise de la ITM'], c:1 },
+    { q:'Accidentul de muncă trebuie comunicat angajatorului:', a:['Imediat','În termen de 30 de zile','Doar dacă victima este spitalizată'], c:0 },
+    { q:'Cine răspunde de asigurarea securității și sănătății lucrătorilor?', a:['Fiecare lucrător, individual','Angajatorul','Inspectoratul Teritorial de Muncă'], c:1 },
+    { q:'Instruirea periodică SSM se efectuează la interval de:', a:['Cel mult 6 luni, conform programului de instruire','O dată la 5 ani','Doar la cererea lucrătorului'], c:0 },
+    { q:'Un panou de semnalizare rotund, de culoare roșie, semnifică:', a:['Obligație','Interdicție','Informare'], c:1 },
+    { q:'Lucrătorul are obligația:', a:['Să utilizeze corect echipamentele de muncă și EIP','Să modifice dispozitivele de protecție dacă îl încurcă','Să ignore instrucțiunile dacă are experiență'], c:0 },
+    { q:'Refuzul nejustificat de utilizare a EIP constituie:', a:['Un drept al lucrătorului','Abatere disciplinară','O situație fără consecințe'], c:1 },
+    { q:'Numărul unic pentru apeluri de urgență este:', a:['112','961','021 9999'], c:0 },
+  ]},
+  { id:2, titlu:'Test periodic SSM — general', prag:70, tip:'Periodic', activ:true, intrebari:[
+    { q:'Fișa de instruire individuală se completează:', a:['Anual, centralizat','La fiecare instructaj, cu semnătura celui instruit','Doar la angajare'], c:1 },
+    { q:'Manipularea manuală corectă a unei greutăți se face cu:', a:['Spatele îndoit și genunchii drepți','Spatele drept și genunchii îndoiți','Mișcare bruscă de smucire'], c:1 },
+    { q:'Dispozitivele de protecție ale echipamentelor de muncă:', a:['Pot fi îndepărtate pentru productivitate','Nu pot fi îndepărtate sau modificate','Se folosesc doar la controale'], c:1 },
+    { q:'O defecțiune la un echipament de muncă se raportează:', a:['La sfârșitul schimbului','Imediat, conducătorului locului de muncă','Doar dacă echipamentul se oprește complet'], c:1 },
+    { q:'Instructajul suplimentar (IS) se efectuează:', a:['La revenirea după o absență de peste 30 zile lucrătoare','Doar la angajare','Numai pentru personalul TESA'], c:0 },
+    { q:'Trusa de prim ajutor trebuie să fie:', a:['Încuiată la administrator','Accesibilă și semnalizată corespunzător','Păstrată la vestiar'], c:1 },
+    { q:'Poziția laterală de siguranță se aplică unei victime:', a:['Conștiente, cu fractură','Inconștiente, care respiră','Aflate în stop cardio-respirator'], c:1 },
+    { q:'Semnalizarea de salvare/prim ajutor are culoarea:', a:['Verde','Galben','Albastru'], c:0 },
+  ]},
+  { id:3, titlu:'Test periodic SU — incendiu', prag:70, tip:'Periodic', activ:true, intrebari:[
+    { q:'La declanșarea alarmei de incendiu:', a:['Îmi strâng lucrurile personale întâi','Evacuez imediat, calm, pe traseul stabilit','Aștept confirmarea că nu e exercițiu'], c:1 },
+    { q:'În caz de incendiu, liftul:', a:['Se folosește pentru evacuare rapidă','Nu se folosește niciodată','Se folosește doar de persoane cu mobilitate redusă'], c:1 },
+    { q:'Stingătorul se orientează:', a:['Spre vârful flăcării','Spre baza flăcării','Spre fumul degajat'], c:1 },
+    { q:'Pentru un incendiu la un echipament electric sub tensiune se folosește:', a:['Apă','Stingător CO2','Spumă'], c:1 },
+    { q:'Clasa de incendiu A cuprinde:', a:['Materiale solide (lemn, hârtie, textile)','Gaze inflamabile','Uleiuri de gătit'], c:0 },
+    { q:'Căile de evacuare trebuie:', a:['Menținute libere permanent','Folosite pentru depozitare temporară','Încuiate în afara programului'], c:0 },
+    { q:'În deplasarea printr-un spațiu cu fum:', a:['Merg în picioare, repede','Mă deplasez aplecat, cât mai jos','Aștept pe loc salvatorii'], c:1 },
+    { q:'După evacuare, prezența se verifică:', a:['La punctul de adunare, prin apel nominal','Telefonic, a doua zi','Nu se verifică'], c:0 },
+  ]},
+  { id:4, titlu:'Test post-instructaj suplimentar (IS)', prag:75, tip:'Suplimentar', activ:false, intrebari:[
+    { q:'Instructajul suplimentar este obligatoriu la:', a:['Modificarea tehnologiei sau a echipamentelor','Schimbarea programului de lucru','Concediul de odihnă'], c:0 },
+    { q:'Durata minimă a instructajului suplimentar este:', a:['8 ore','30 de minute','Nu este reglementată'], c:0 },
+    { q:'Instructajul suplimentar se consemnează în:', a:['Fișa de instruire individuală','Registrul de intrare-ieșire','Nu se consemnează'], c:0 },
+    { q:'După un accident de muncă, lucrătorul reia activitatea:', a:['Direct, fără formalități','După instructaj suplimentar','După o simplă informare verbală'], c:1 },
+    { q:'Cine efectuează instructajul suplimentar?', a:['Conducătorul locului de muncă / lucrătorul desemnat','Orice coleg cu vechime','Contabilul unității'], c:0 },
+    { q:'Verificarea însușirii cunoștințelor după IS este:', a:['Opțională','Obligatorie','Necesară doar la cerere'], c:1 },
+  ]},
+]
+
+/* ═══════════════════════════════════════
    HOOKS
 ═══════════════════════════════════════ */
 function useWidth() {
@@ -1380,24 +1489,113 @@ function ModSetari({ modules, setModules, instrCfg, setInstrCfg, ind, firma, onL
 /* ═══════════════════════════════════════
    MODUL: MATERIALE & TESTE (cerința 5)
 ═══════════════════════════════════════ */
+function MaterialViewer({ mat, onClose }) {
+  return (
+    <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.65)',zIndex:1000,display:'flex',alignItems:'center',justifyContent:'center',padding:16}}>
+      <div style={{background:C.white,borderRadius:C.r,width:'100%',maxWidth:640,maxHeight:'85vh',display:'flex',flexDirection:'column',overflow:'hidden',boxShadow:'0 20px 60px rgba(0,0,0,0.3)'}}>
+        <div style={{padding:'16px 20px',borderBottom:`1px solid ${C.line}`,display:'flex',justifyContent:'space-between',alignItems:'center',flexShrink:0}}>
+          <div>
+            <div style={{fontSize:15,fontWeight:700,color:C.t0}}>{mat.titlu}</div>
+            <div style={{fontSize:11,color:C.t2,marginTop:2}}>{mat.tip} · {mat.durata} · versiunea {mat.ver}</div>
+          </div>
+          <button onClick={onClose} style={{background:'none',border:'none',fontSize:20,color:C.t2,cursor:'pointer'}}>✕</button>
+        </div>
+        <div style={{flex:1,overflowY:'auto',padding:20}}>
+          {mat.capitole.map(([titlu,continut],i) => (
+            <div key={i} style={{marginBottom:16,padding:'14px 16px',background:C.bg,borderRadius:C.rs,border:`1px solid ${C.line}`}}>
+              <div style={{fontSize:13,fontWeight:700,color:C.primary,marginBottom:6}}>{titlu}</div>
+              <div style={{fontSize:12,color:C.t1,lineHeight:1.7}}>{continut}</div>
+            </div>
+          ))}
+          <div style={{padding:'10px 14px',background:C.amberBg,borderRadius:C.rx,fontSize:11,color:C.amber,lineHeight:1.5}}>
+            📋 Conținut orientativ conform legislației. Se adaptează domeniului de activitate al beneficiarului și se completează cu instrucțiunile proprii ale unității.
+          </div>
+        </div>
+        <div style={{padding:'13px 20px',borderTop:`1px solid ${C.line}`,display:'flex',justifyContent:'flex-end',gap:10,flexShrink:0}}>
+          <Btn label='⬇ Descarcă' color={C.gray} outline />
+          <Btn label='✓ Am parcurs materialul' color={C.teal} onClick={onClose} />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function TestRunner({ test, onClose }) {
+  const [answers,setAnswers] = useState({})
+  const [result,setResult]   = useState(null)
+  const submit = () => {
+    const corecte = test.intrebari.filter((q,i) => answers[i] === q.c).length
+    const scor = Math.round(corecte / test.intrebari.length * 100)
+    setResult({ corecte, scor, promovat: scor >= test.prag })
+  }
+  return (
+    <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.65)',zIndex:1000,display:'flex',alignItems:'center',justifyContent:'center',padding:16}}>
+      <div style={{background:C.white,borderRadius:C.r,width:'100%',maxWidth:640,maxHeight:'85vh',display:'flex',flexDirection:'column',overflow:'hidden',boxShadow:'0 20px 60px rgba(0,0,0,0.3)'}}>
+        <div style={{padding:'16px 20px',borderBottom:`1px solid ${C.line}`,display:'flex',justifyContent:'space-between',alignItems:'center',flexShrink:0}}>
+          <div>
+            <div style={{fontSize:15,fontWeight:700,color:C.t0}}>✅ {test.titlu}</div>
+            <div style={{fontSize:11,color:C.t2,marginTop:2}}>{test.intrebari.length} întrebări · prag de promovare {test.prag}%</div>
+          </div>
+          <button onClick={onClose} style={{background:'none',border:'none',fontSize:20,color:C.t2,cursor:'pointer'}}>✕</button>
+        </div>
+        <div style={{flex:1,overflowY:'auto',padding:20}}>
+          {result && (
+            <div style={{marginBottom:16,padding:18,borderRadius:C.rs,background:result.promovat?C.greenBg:C.redBg,border:`2px solid ${result.promovat?C.green:C.red}44`,textAlign:'center'}}>
+              <div style={{fontSize:40,marginBottom:6}}>{result.promovat?'🎉':'❌'}</div>
+              <div style={{fontSize:22,fontWeight:900,color:result.promovat?C.teal:C.red}}>{result.scor}%</div>
+              <div style={{fontSize:13,color:C.t1,marginTop:4}}>{result.corecte} din {test.intrebari.length} răspunsuri corecte · prag {test.prag}%</div>
+              <div style={{fontSize:14,fontWeight:800,color:result.promovat?C.teal:C.red,marginTop:8}}>
+                {result.promovat ? 'PROMOVAT — rezultatul se consemnează în fișa de instruire' : 'NEPROMOVAT — instructajul se repetă conform procedurii'}
+              </div>
+            </div>
+          )}
+          {test.intrebari.map((q,i) => {
+            const chosen = answers[i]
+            return (
+              <div key={i} style={{marginBottom:14,padding:'14px 16px',background:C.bg,borderRadius:C.rs,border:`1px solid ${C.line}`}}>
+                <div style={{fontSize:13,fontWeight:700,color:C.t0,marginBottom:10}}>{i+1}. {q.q}</div>
+                <div style={{display:'flex',flexDirection:'column',gap:6}}>
+                  {q.a.map((opt,oi) => {
+                    let border = chosen===oi ? C.primary : C.line
+                    let bg = chosen===oi ? C.primaryBg : C.white
+                    if (result) {
+                      if (oi === q.c) { border = C.green; bg = C.greenBg }
+                      else if (chosen === oi && oi !== q.c) { border = C.red; bg = C.redBg }
+                    }
+                    return (
+                      <div key={oi} onClick={()=>!result&&setAnswers({...answers,[i]:oi})}
+                        style={{padding:'9px 12px',borderRadius:C.rx,border:`2px solid ${border}`,background:bg,cursor:result?'default':'pointer',fontSize:12,color:C.t1,display:'flex',gap:8,alignItems:'center'}}>
+                        <div style={{width:16,height:16,borderRadius:'50%',border:`2px solid ${border}`,background:chosen===oi?(result?(oi===q.c?C.green:C.red):C.primary):'transparent',flexShrink:0}} />
+                        {opt}
+                        {result && oi===q.c && <span style={{marginLeft:'auto',fontSize:11,color:C.green,fontWeight:700}}>✓ corect</span>}
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+        <div style={{padding:'13px 20px',borderTop:`1px solid ${C.line}`,display:'flex',justifyContent:'space-between',gap:10,flexShrink:0}}>
+          <div style={{fontSize:12,color:C.t2,alignSelf:'center'}}>{Object.keys(answers).length}/{test.intrebari.length} răspunse</div>
+          {!result
+            ? <Btn label='📊 Finalizează testul' color={C.primary} disabled={Object.keys(answers).length<test.intrebari.length} onClick={submit} />
+            : <Btn label='Închide' color={C.teal} onClick={onClose} />}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function ModMateriale() {
-  const [tab,setTab] = useState('materiale')
-  const materiale = [
-    {id:1,titlu:'IIG — Prezentare generală SSM',tip:'Prezentare',format:'PPTX',durata:'45 min',sursa:'Furnizor',ver:'v2.1'},
-    {id:2,titlu:'ILM — Riscuri specifice producție',tip:'Video',format:'MP4',durata:'22 min',sursa:'Furnizor',ver:'v1.4'},
-    {id:3,titlu:'IP — Recapitulare semestrială',tip:'Document',format:'PDF',durata:'30 min',sursa:'Beneficiar',ver:'v3.0'},
-    {id:4,titlu:'IS — Instructaj după incident',tip:'Prezentare',format:'PPTX',durata:'20 min',sursa:'Furnizor',ver:'v1.0'},
-    {id:5,titlu:'SU — Evacuare și stingătoare',tip:'Video',format:'MP4',durata:'18 min',sursa:'Furnizor',ver:'v2.0'},
-  ]
-  const teste = [
-    {id:1,titlu:'Test evaluare la angajare (IIG)',intrebari:20,prag:'80%',tip:'La angajare',activ:true},
-    {id:2,titlu:'Test periodic SSM — general',intrebari:15,prag:'70%',tip:'Periodic',activ:true},
-    {id:3,titlu:'Test periodic SU — incendiu',intrebari:10,prag:'70%',tip:'Periodic',activ:true},
-    {id:4,titlu:'Test post-incident (IS)',intrebari:12,prag:'75%',tip:'Suplimentar',activ:false},
-  ]
+  const [tab,setTab]       = useState('materiale')
+  const [viewer,setViewer] = useState(null)
+  const [runner,setRunner] = useState(null)
   const tipIcon = t => ({Video:'🎬',Prezentare:'📊',Document:'📄'}[t]||'📁')
   return (
     <div style={{display:'flex',flexDirection:'column',gap:14}}>
+      {viewer && <MaterialViewer mat={viewer} onClose={()=>setViewer(null)} />}
+      {runner && <TestRunner test={runner} onClose={()=>setRunner(null)} />}
       <div style={{display:'flex',justifyContent:'space-between',flexWrap:'wrap',gap:10}}>
         <div><h2 style={{fontSize:18,fontWeight:900,color:C.t0}}>Materiale & Teste</h2><div style={{fontSize:12,color:C.t2,marginTop:2}}>Conținut de instruire SSM-SU · încărcat de furnizor, actualizabil de beneficiar</div></div>
         <Btn label='+ Încarcă material' color={C.primary} />
@@ -1410,17 +1608,16 @@ function ModMateriale() {
       {tab==='materiale' && (
         <Card>
           <table style={{width:'100%',borderCollapse:'collapse'}}>
-            <thead><THead cols={['Material','Tip','Format','Durată','Sursă','Versiune','']} /></thead>
+            <thead><THead cols={['Material','Tip','Durată','Sursă','Versiune','']} /></thead>
             <tbody>
-              {materiale.map(m => (
+              {MATERIALE_DB.map(m => (
                 <TRow key={m.id}>
                   <TD style={{fontWeight:600,color:C.t0}}>{tipIcon(m.tip)} {m.titlu}</TD>
                   <TD>{m.tip}</TD>
-                  <TD><Chip label={m.format} color={C.primary} sm /></TD>
                   <TD style={{color:C.t2}}>{m.durata}</TD>
                   <TD><Chip label={m.sursa} color={m.sursa==='Furnizor'?C.purple:C.teal} sm /></TD>
                   <TD style={{fontFamily:'monospace',fontSize:11,color:C.t2}}>{m.ver}</TD>
-                  <TD><div style={{display:'flex',gap:6}}><Btn label='▶ Vizualizează' color={C.primary} outline sm /><Btn label='✏️ Actualizează' color={C.gray} outline sm /></div></TD>
+                  <TD><div style={{display:'flex',gap:6}}><Btn label='▶ Vizualizează' color={C.primary} sm onClick={()=>setViewer(m)} /><Btn label='✏️' color={C.gray} outline sm /></div></TD>
                 </TRow>
               ))}
             </tbody>
@@ -1430,22 +1627,107 @@ function ModMateriale() {
       {tab==='teste' && (
         <Card>
           <table style={{width:'100%',borderCollapse:'collapse'}}>
-            <thead><THead cols={['Test','Întrebări','Prag promovare','Tip','Status','']} /></thead>
+            <thead><THead cols={['Test','Întrebări','Prag','Tip','Status','']} /></thead>
             <tbody>
-              {teste.map(t => (
+              {TESTE_DB.map(t => (
                 <TRow key={t.id}>
                   <TD style={{fontWeight:600,color:C.t0}}>{t.titlu}</TD>
-                  <TD style={{color:C.t2}}>{t.intrebari} întrebări</TD>
-                  <TD><Chip label={t.prag} color={C.amber} sm /></TD>
+                  <TD style={{color:C.t2}}>{t.intrebari.length} întrebări</TD>
+                  <TD><Chip label={t.prag+'%'} color={C.amber} sm /></TD>
                   <TD>{t.tip}</TD>
                   <TD><Chip label={t.activ?'Activ':'Inactiv'} color={t.activ?C.teal:C.gray} sm /></TD>
-                  <TD><div style={{display:'flex',gap:6}}><Btn label='✏️ Editează' color={C.primary} outline sm /><Btn label='📊 Rezultate' color={C.teal} sm /></div></TD>
+                  <TD><div style={{display:'flex',gap:6}}><Btn label='▶ Rulează testul' color={C.primary} sm onClick={()=>setRunner(t)} /><Btn label='✏️' color={C.gray} outline sm /></div></TD>
                 </TRow>
               ))}
             </tbody>
           </table>
         </Card>
       )}
+    </div>
+  )
+}
+
+/* ═══════════════════════════════════════
+   MODUL: LEGISLAȚIE (monitorizare + email zilnic)
+═══════════════════════════════════════ */
+function ModLegislatie() {
+  const [emailActiv,setEmailActiv] = useState(true)
+  const [email,setEmail] = useState('manager@firma.ro')
+  const azi = new Date().toLocaleDateString('ro-RO',{day:'numeric',month:'long',year:'numeric'})
+  const istoricVerificari = [
+    { data:'Azi · 07:00',        rezultat:'ok',   text:'Nicio modificare legislativă detectată. Verificate 17 acte normative.' },
+    { data:'Ieri · 07:00',       rezultat:'ok',   text:'Nicio modificare legislativă detectată. Verificate 17 acte normative.' },
+    { data:'Acum 2 zile · 07:00',rezultat:'ok',   text:'Nicio modificare legislativă detectată. Verificate 17 acte normative.' },
+    { data:'Exemplu notificare', rezultat:'modif',text:'MODIFICARE DETECTATĂ: HG 1425/2006 — a fost publicată o modificare în Monitorul Oficial. Materialele de instruire afectate au fost marcate pentru revizuire. Detalii complete în email.' },
+  ]
+  return (
+    <div style={{display:'flex',flexDirection:'column',gap:14}}>
+      <div style={{display:'flex',justifyContent:'space-between',flexWrap:'wrap',gap:10}}>
+        <div><h2 style={{fontSize:18,fontWeight:900,color:C.t0}}>⚖️ Legislație SSM-SU</h2><div style={{fontSize:12,color:C.t2,marginTop:2}}>17 acte normative monitorizate · actualizare automată permanentă</div></div>
+        <div style={{padding:'8px 14px',background:C.greenBg,border:`1px solid ${C.green}44`,borderRadius:C.rs,fontSize:12,fontWeight:700,color:C.green,display:'flex',alignItems:'center',gap:6}}>
+          ✓ Ultima verificare: azi, 07:00 — toate la zi
+        </div>
+      </div>
+
+      {/* Monitorizare & email zilnic */}
+      <Card style={{padding:20}}>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:14,flexWrap:'wrap'}}>
+          <div style={{flex:1,minWidth:240}}>
+            <div style={{fontSize:14,fontWeight:800,color:C.t0,marginBottom:4}}>📧 Notificare zilnică pe email</div>
+            <div style={{fontSize:12,color:C.t2,lineHeight:1.6}}>
+              În fiecare zi la ora 07:00, managerul SSM primește un email cu rezultatul verificării legislative: fie lista modificărilor detectate, fie confirmarea că nu au existat modificări.
+            </div>
+          </div>
+          <Toggle checked={emailActiv} onChange={setEmailActiv} label='' sub='' />
+        </div>
+        <div style={{display:'grid',gridTemplateColumns:'1fr auto',gap:10,marginTop:14,alignItems:'end'}}>
+          <div>
+            <div style={{fontSize:11,color:C.t2,fontWeight:700,marginBottom:5}}>EMAIL MANAGER SSM</div>
+            <input value={email} onChange={e=>setEmail(e.target.value)}
+              style={{width:'100%',padding:'10px 12px',background:C.bg,border:`1px solid ${C.line}`,borderRadius:C.rs,fontSize:13,color:C.t0,outline:'none',boxSizing:'border-box'}} />
+          </div>
+          <Btn label='💾 Salvează' color={C.primary} />
+        </div>
+      </Card>
+
+      {/* Istoricul verificărilor */}
+      <Card>
+        <div style={{padding:'13px 18px',borderBottom:`1px solid ${C.line}`,fontSize:13,fontWeight:700,color:C.t0}}>🔍 Istoricul verificărilor zilnice</div>
+        {istoricVerificari.map((v,i) => (
+          <div key={i} style={{padding:'12px 18px',borderBottom:i<istoricVerificari.length-1?`1px solid ${C.line}`:'none',display:'flex',gap:12,alignItems:'flex-start',background:v.rezultat==='modif'?C.amberBg:'transparent'}}>
+            <span style={{fontSize:16,flexShrink:0}}>{v.rezultat==='ok'?'✅':'⚠️'}</span>
+            <div style={{flex:1}}>
+              <div style={{fontSize:11,fontWeight:700,color:v.rezultat==='modif'?C.amber:C.t2,marginBottom:2}}>{v.data}</div>
+              <div style={{fontSize:12,color:C.t1,lineHeight:1.5}}>{v.text}</div>
+            </div>
+          </div>
+        ))}
+      </Card>
+
+      {/* Lista actelor normative */}
+      <Card>
+        <div style={{padding:'13px 18px',borderBottom:`1px solid ${C.line}`,fontSize:13,fontWeight:700,color:C.t0}}>📜 Acte normative monitorizate</div>
+        <div style={{overflowX:'auto'}}>
+          <table style={{width:'100%',borderCollapse:'collapse',minWidth:640}}>
+            <thead><THead cols={['Act normativ','Domeniu','Publicare','Modificări','Status','']} /></thead>
+            <tbody>
+              {LEGISLATIE_DB.map(l => (
+                <TRow key={l.act}>
+                  <TD style={{fontWeight:700,color:C.t0,whiteSpace:'nowrap'}}>{l.act}</TD>
+                  <TD style={{fontSize:12}}>{l.domeniu}</TD>
+                  <TD style={{color:C.t2,fontSize:11,whiteSpace:'nowrap'}}>{l.publicat}</TD>
+                  <TD style={{color:C.t2,fontSize:11}}>{l.modif}</TD>
+                  <TD><Chip label='✓ La zi' color={C.teal} sm /></TD>
+                  <TD><Btn label='📖 Text oficial' color={C.primary} outline sm /></TD>
+                </TRow>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div style={{padding:'12px 18px',borderTop:`1px solid ${C.line}`,fontSize:11,color:C.t2}}>
+          Sursa textelor oficiale: <strong>legislatie.just.ro</strong> (portalul legislativ al Ministerului Justiției) și <strong>monitoruloficial.ro</strong>. La detectarea unei modificări, materialele de instruire afectate sunt marcate automat pentru revizuire.
+        </div>
+      </Card>
     </div>
   )
 }
@@ -1656,6 +1938,7 @@ function AppShell({ user, appCfg, onLogout }) {
     {id:'rapoarte',label:'Rapoarte',icon:'📈'},
     {id:'arhiva',label:'Arhivă',icon:'🗄'},
     {id:'structura',label:'Structură',icon:'🏢'},
+    {id:'legislatie',label:'Legislație',icon:'⚖️'},
     ...(modules.nearMiss?[{id:'nearmiss',label:'Near Miss',icon:'⚠️'}]:[]),
     ...(modules.audit?[{id:'audit',label:'Audit',icon:'🔍'}]:[]),
     {id:'setari',label:'Setări',icon:'⚙️'},
@@ -1674,6 +1957,7 @@ function AppShell({ user, appCfg, onLogout }) {
       case 'rapoarte':  return <ModRapoarte />
       case 'arhiva':    return <ModArhiva />
       case 'structura': return <ModStructura />
+      case 'legislatie': return <ModLegislatie />
       case 'nearmiss':  return <ModNearMiss />
       case 'setari':    return <ModSetari modules={modules} setModules={setModules} instrCfg={instrCfg} setInstrCfg={setInstrCfg} ind={ind} firma={firma} onLogout={onLogout} />
       default: return (
