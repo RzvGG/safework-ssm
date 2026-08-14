@@ -28,6 +28,7 @@ const CUI_DB = {
   '55667788':{ nume:'La Bunica Restaurant SRL', caen:'5610', desc:'Restaurante', județ:'Brașov', oras:'Brașov', angajati:8, forma:'SRL' },
   '99887766':{ nume:'Trans Express SRL', caen:'4941', desc:'Transporturi rutiere de mărfuri', județ:'Timiș', oras:'Timișoara', angajati:35, forma:'SRL' },
   '33445566':{ nume:'Clinica Sănătate SRL', caen:'8621', desc:'Activități asistență medicală generală', județ:'Constanța', oras:'Constanța', angajati:19, forma:'SRL' },
+  '44556677':{ nume:'Banca Demo România SA', caen:'6419', desc:'Alte activități de intermedieri monetare', județ:'București', oras:'București', angajati:312, forma:'SA' },
 }
 
 const getRiscCAEN = (caen) => {
@@ -43,7 +44,7 @@ const getIndustrieCAEN = (caen) => {
   const cod = String(caen).slice(0,2)
   const productie = ['10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33']
   if (productie.includes(cod)) return 'productie'
-  const map = { '41':'constructii','42':'constructii','43':'constructii','49':'transport','50':'transport','51':'transport','52':'transport','53':'transport','55':'horeca','56':'horeca','62':'it','63':'it','86':'sanatate','87':'sanatate','88':'sanatate' }
+  const map = { '41':'constructii','42':'constructii','43':'constructii','49':'transport','50':'transport','51':'transport','52':'transport','53':'transport','55':'horeca','56':'horeca','62':'it','63':'it','64':'financiar','65':'financiar','66':'financiar','86':'sanatate','87':'sanatate','88':'sanatate' }
   return map[cod] || 'servicii'
 }
 
