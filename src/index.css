@@ -6,14 +6,14 @@
 
 html, body, #root {
   height: 100%;
-  background: #F0F4F9;
+  background: #F7F6F3;
 }
 
 body {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Manrope', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #0F172A;
+  color: #16191C;
 }
 
 @keyframes spin {
@@ -34,7 +34,7 @@ body {
 
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: #D5D2CA; border-radius: 4px; }
 
 input, select, button, textarea {
   font-family: inherit;
@@ -42,5 +42,5 @@ input, select, button, textarea {
 
 input::placeholder,
 textarea::placeholder {
-  color: #94A3B8;
+  color: #8A8F95;
 }

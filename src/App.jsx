@@ -4,18 +4,19 @@ import { useState, useEffect, useRef } from 'react'
    DESIGN TOKENS
 ═══════════════════════════════════════ */
 const C = {
-  bg:'#F0F4F9', white:'#FFFFFF',
-  line:'#E2E8F0', lineHi:'#CBD5E1',
-  primary:'#1D4ED8', primaryDk:'#1E40AF', primaryBg:'rgba(29,78,216,0.08)',
-  teal:'#059669', tealBg:'rgba(5,150,105,0.08)',
-  amber:'#D97706', amberBg:'rgba(217,119,6,0.08)',
-  red:'#DC2626', redBg:'rgba(220,38,38,0.08)',
-  green:'#16A34A', greenBg:'rgba(22,163,74,0.08)',
-  purple:'#7C3AED', purpleBg:'rgba(124,58,237,0.08)',
-  gray:'#64748B',
-  t0:'#0F172A', t1:'#1E293B', t2:'#64748B', t3:'#94A3B8',
-  r:14, rs:9, rx:6,
-  shadow:'0 1px 3px rgba(0,0,0,0.06),0 4px 16px rgba(0,0,0,0.04)',
+  bg:'#F7F6F3', white:'#FFFFFF',
+  line:'#E7E5DF', lineHi:'#D5D2CA',
+  primary:'#16191C', primaryDk:'#2A2E33', primaryBg:'#F1F0EC',
+  teal:'oklch(0.45 0.1 162)', tealBg:'oklch(0.95 0.03 162)',
+  amber:'oklch(0.5 0.12 75)', amberBg:'oklch(0.96 0.03 75)',
+  red:'oklch(0.55 0.15 25)', redBg:'oklch(0.98 0.01 25)',
+  green:'oklch(0.62 0.12 162)', greenBg:'oklch(0.95 0.03 162)',
+  purple:'#40454A', purpleBg:'#F1F0EC',
+  gray:'#6B7076',
+  t0:'#16191C', t1:'#40454A', t2:'#6B7076', t3:'#8A8F95',
+  r:18, rs:14, rx:9,
+  mono:"'IBM Plex Mono', monospace",
+  shadow:'0 1px 2px rgba(22,25,28,0.06)',
 }
 
 /* ═══════════════════════════════════════
@@ -271,13 +272,12 @@ function useWidth() {
    ATOMS
 ═══════════════════════════════════════ */
 function Logo({ size='md' }) {
-  const s=size==='lg'?52:36, fs=size==='lg'?26:18, ts=size==='lg'?22:15
+  const s=size==='lg'?34:26, ts=size==='lg'?20:15
   return (
-    <div style={{display:'flex',alignItems:'center',gap:10}}>
-      <div style={{width:s,height:s,borderRadius:s*0.26,background:`linear-gradient(135deg,${C.primary},#3B82F6)`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:fs,boxShadow:`0 4px 16px ${C.primary}44`,flexShrink:0}}>🛡</div>
-      <div>
-        <div style={{fontSize:ts,fontWeight:900,color:C.t0,letterSpacing:'-0.02em',lineHeight:1}}>Safe<span style={{color:C.primary}}>Work</span></div>
-        <div style={{fontSize:ts*0.6,color:C.t2,letterSpacing:'0.08em',textTransform:'uppercase',marginTop:1}}>SSM Platform</div>
+    <div style={{display:'flex',alignItems:'center',gap:9}}>
+      <span style={{width:s,height:s,borderRadius:s*0.3,background:'#16191C',flexShrink:0}} />
+      <div style={{display:'flex',flexDirection:'column',lineHeight:1}}>
+        <strong style={{fontSize:ts,fontWeight:800,color:C.t0,letterSpacing:'-0.02em'}}>SafeWork <span style={{color:C.t3}}>SSM</span></strong>
       </div>
     </div>
   )
@@ -300,7 +300,7 @@ function Btn({ label, onClick, color=C.primary, outline, full, disabled, loading
   return (
     <button disabled={disabled||loading} onClick={onClick}
       onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)}
-      style={{padding:pad,background:disabled||loading?'#E2E8F0':outline?(h?color+'14':C.white):(h?C.primaryDk:color),border:`2px solid ${disabled||loading?C.line:color}`,borderRadius:C.rs,color:disabled||loading?C.t3:outline?color:'#fff',fontSize:fs,fontWeight:700,cursor:disabled||loading?'not-allowed':'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:8,transition:'all .15s',width:full?'100%':'auto',boxShadow:!outline&&!disabled&&!loading?`0 2px 8px ${color}44`:'none'}}>
+      style={{padding:pad,background:disabled||loading?'#E2E8F0':outline?(h?color+'14':C.white):(h?C.primaryDk:color),border:`2px solid ${disabled||loading?C.line:color}`,borderRadius:C.rs,color:disabled||loading?C.t3:outline?color:'#fff',fontSize:fs,fontWeight:700,cursor:disabled||loading?'not-allowed':'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:8,transition:'all .15s',width:full?'100%':'auto',boxShadow:'none'}}>
       {loading ? <span style={{animation:'spin .7s linear infinite',display:'inline-block',fontSize:16}}>⟳</span> : <>{icon&&<span>{icon}</span>}{label}</>}
     </button>
   )
@@ -401,42 +401,33 @@ function TD({ children, style={} }) {
 ═══════════════════════════════════════ */
 function AuthBranding() {
   return (
-    <div style={{background:`linear-gradient(160deg,#0F2D6B 0%,#1D4ED8 55%,#1E40AF 100%)`,padding:'48px 40px',display:'flex',flexDirection:'column',justifyContent:'space-between',position:'relative',overflow:'hidden',minHeight:'100vh'}}>
-      <div style={{position:'absolute',top:'-80px',left:'-80px',width:'320px',height:'320px',borderRadius:'50%',background:'rgba(255,255,255,0.04)',pointerEvents:'none'}} />
-      <div style={{position:'absolute',top:'auto',right:'0',bottom:'20%',width:'180px',height:'180px',borderRadius:'50%',background:'rgba(255,255,255,0.06)',pointerEvents:'none'}} />
-
-      <div style={{position:'relative',zIndex:1}}>
-        <div style={{display:'flex',alignItems:'center',gap:12,marginBottom:40}}>
-          <div style={{width:52,height:52,borderRadius:14,background:'rgba(255,255,255,0.15)',backdropFilter:'blur(8px)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:26}}>🛡</div>
-          <div>
-            <div style={{fontSize:22,fontWeight:900,color:'#fff',letterSpacing:'-0.02em'}}>Safe<span style={{color:'#93C5FD'}}>Work</span></div>
-            <div style={{fontSize:10,color:'rgba(255,255,255,0.5)',letterSpacing:'0.1em',textTransform:'uppercase'}}>SSM Platform</div>
-          </div>
+    <div style={{background:'#16191C',padding:'48px 44px',display:'flex',flexDirection:'column',justifyContent:'space-between',minHeight:'100vh',boxSizing:'border-box'}}>
+      <div>
+        <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:56}}>
+          <span style={{width:30,height:30,borderRadius:9,background:'#FFFFFF'}} />
+          <strong style={{fontSize:18,fontWeight:800,color:'#FFFFFF',letterSpacing:'-0.02em'}}>SafeWork SSM</strong>
+          <span style={{marginLeft:'auto',display:'flex',border:'1px solid #40454A',borderRadius:6,overflow:'hidden',fontFamily:C.mono,fontSize:10}}>
+            <span style={{padding:'3px 7px',background:'#FFFFFF',color:'#16191C'}}>RO</span>
+            <span style={{padding:'3px 7px',color:'#8A8F95'}}>EN</span>
+          </span>
         </div>
-        <div style={{fontSize:30,fontWeight:900,color:'#fff',lineHeight:1.2,letterSpacing:'-0.02em',marginBottom:12}}>
-          Gestionați SSM-ul<br/><span style={{color:'#93C5FD'}}>simplu și conform legii</span>
-        </div>
-        <div style={{fontSize:14,color:'rgba(255,255,255,0.65)',lineHeight:1.7}}>
-          Platforma care înlocuiește dosarele de hârtie și vă ține mereu în regulă cu ITM.
-        </div>
+        <span style={{fontFamily:C.mono,fontSize:11,letterSpacing:'0.06em',textTransform:'uppercase',color:'oklch(0.62 0.12 162)'}}>Platformă SSM · România</span>
+        <h1 style={{margin:'10px 0 14px',fontSize:34,fontWeight:800,letterSpacing:'-0.02em',lineHeight:1.15,color:'#FFFFFF'}}>SSM-ul firmei tale,<br/>în regulă. Fără dosare.</h1>
+        <p style={{margin:0,fontSize:15,lineHeight:1.6,color:'#8A8F95',maxWidth:380}}>Instruiri semnate pe telefon, fișe generate automat conform HG 1425/2006, termene urmărite pentru tine.</p>
       </div>
-
-      <div style={{position:'relative',zIndex:1}}>
-        <div style={{display:'flex',flexDirection:'column',gap:12,marginBottom:32}}>
-          {[['📋','Instruiri SSM automate și monitorizate'],['🔔','Alerte scadențe înainte să fie problemă'],['✍️','Semnătură digitală fără hârtii'],['⚖️','Consultant SSM virtual 24/7'],['📊','Rapoarte conforme ITM la un click']].map(([icon,text]) => (
-            <div key={text} style={{display:'flex',gap:12,alignItems:'center'}}>
-              <div style={{width:36,height:36,borderRadius:C.rx,background:'rgba(255,255,255,0.12)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:16,flexShrink:0}}>{icon}</div>
-              <span style={{fontSize:13,color:'rgba(255,255,255,0.85)',fontWeight:500}}>{text}</span>
+      <div style={{display:'flex',flexDirection:'column',gap:22}}>
+        <div style={{display:'flex',flexDirection:'column',gap:13}}>
+          {['Fișe de instruire generate și arhivate automat','Semnătură pe ecran — valabilă, cu trasabilitate','Alerte înainte de fiecare termen legal','Dosar complet, pregătit pentru controlul ITM'].map(t => (
+            <div key={t} style={{display:'flex',gap:11,alignItems:'center'}}>
+              <span style={{width:22,height:22,borderRadius:999,background:'oklch(0.62 0.12 162)',color:'#fff',fontSize:12,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>✓</span>
+              <span style={{fontSize:14,color:'#D5D2CA'}}>{t}</span>
             </div>
           ))}
         </div>
-        <div style={{padding:16,background:'rgba(255,255,255,0.1)',borderRadius:C.rs,border:'1px solid rgba(255,255,255,0.15)'}}>
-          <div style={{fontSize:11,color:'rgba(255,255,255,0.5)',marginBottom:8}}>Folosit de firme din toată România</div>
-          <div style={{display:'flex',gap:20}}>
-            {[['2.400+','Firme active'],['98%','Conformitate ITM'],['0 lei','Amenzi la clienți']].map(([v,l]) => (
-              <div key={l}><div style={{fontSize:20,fontWeight:900,color:'#fff'}}>{v}</div><div style={{fontSize:10,color:'rgba(255,255,255,0.5)'}}>{l}</div></div>
-            ))}
-          </div>
+        <div style={{borderTop:'1px solid #2A2E33',paddingTop:18,display:'flex',gap:28}}>
+          {[['2.400+','firme active'],['98%','conformitate ITM'],['0 lei','amenzi la clienți']].map(([v,l]) => (
+            <div key={l}><div style={{fontSize:19,fontWeight:800,color:'#FFFFFF'}}>{v}</div><div style={{fontFamily:C.mono,fontSize:10,color:'#8A8F95',textTransform:'uppercase',letterSpacing:'0.05em',marginTop:3}}>{l}</div></div>
+          ))}
         </div>
       </div>
     </div>
@@ -631,11 +622,11 @@ function WizardCUI({ onFinish }) {
   const steps = ['CUI','Firmă','Consiliere','Module','Instruiri','Gata']
 
   return (
-    <div style={{minHeight:'100vh',background:`linear-gradient(135deg,#EFF6FF 0%,#F0F4F9 100%)`,display:'flex',alignItems:'center',justifyContent:'center',padding:'32px 16px'}}>
-      <div style={{width:'100%',maxWidth:580}}>
+    <div style={{minHeight:'100vh',background:C.bg,display:'flex',alignItems:'center',justifyContent:'center',padding:'32px 16px'}}>
+      <div style={{width:'100%',maxWidth:620}}>
         <div style={{textAlign:'center',marginBottom:24}}>
           <Logo size='lg' />
-          <div style={{fontSize:12,color:C.t2,marginTop:8}}>Configurare inițială · Pasul {step} din {steps.length}</div>
+          <div style={{fontFamily:C.mono,fontSize:11,letterSpacing:'0.06em',textTransform:'uppercase',color:C.green,marginTop:10}}>Pasul {step} din {steps.length} · {steps[step-1]}</div>
         </div>
         <div style={{display:'flex',gap:4,marginBottom:24}}>
           {steps.map((_,i) => <div key={i} style={{flex:1,height:4,borderRadius:4,background:i<step?C.primary:C.line,transition:'background .3s'}} />)}
@@ -960,7 +951,7 @@ function ModDashboard({ firma, modules, instruiriCfg, ind }) {
   const ANG = getAngajati(ind)
   return (
     <div style={{display:'flex',flexDirection:'column',gap:18}}>
-      <div style={{padding:'18px 22px',background:`linear-gradient(135deg,${C.primaryBg},${C.tealBg})`,border:`1px solid ${C.primary}33`,borderRadius:C.r}}>
+      <div style={{padding:'18px 22px',background:C.white,border:`1px solid ${C.primary}33`,borderRadius:C.r}}>
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',flexWrap:'wrap',gap:10}}>
           <div>
             <div style={{fontSize:17,fontWeight:900,color:C.t0,marginBottom:3}}>Bună ziua, Manager SSM 👋</div>
@@ -2120,6 +2111,67 @@ function HelpdeskModal({ onClose }) {
 }
 
 /* ═══════════════════════════════════════
+   MODUL: PLANUL SSM (C2 — mod consultant, sub 10 angajați)
+═══════════════════════════════════════ */
+function ModPlanSSM({ firma, cons }) {
+  const [done,setDone] = useState({1:true,2:true,3:false,4:false,5:false,6:false,7:false,8:false,9:false})
+  const obligatii = [
+    { n:1, t:'Cursul de 40h SSM pentru administrator', d:'Te înscrii la un curs acreditat — după el poți face SSM-ul singur, legal.', termen:'cât mai curând', act:'Vezi cursuri' },
+    { n:2, t:'Evaluarea riscurilor pentru fiecare post', d:'Documentul de bază: ce riscuri există și cum le previi. Se face o dată, se revizuiește anual.', termen:'30 zile', act:'Începe evaluarea' },
+    { n:3, t:'Planul de prevenire și protecție', d:'Rezultă direct din evaluarea riscurilor. SafeWork îl generează pe baza răspunsurilor tale.', termen:'30 zile', act:'Generează' },
+    { n:4, t:'Instruirea introductiv-generală (IIG)', d:'Fiecare angajat, în prima zi, înainte să înceapă lucrul. Cu test și semnătură.', termen:'la fiecare angajare', act:'Configurează' },
+    { n:5, t:'Instruirea la locul de muncă (ILM)', d:'A doua instruire obligatorie din prima zi — specifică postului.', termen:'la fiecare angajare', act:'Configurează' },
+    { n:6, t:'Instruirea periodică (IP)', d:'Se repetă la 1–6 luni. SafeWork te anunță automat înainte de termen.', termen:'recurent', act:'Programează' },
+    { n:7, t:'Fișele de instruire semnate', d:'Fiecare instruire se consemnează în fișa individuală (Anexa 11 HG 1425/2006).', termen:'după fiecare instruire', act:'Vezi fișele' },
+    { n:8, t:'Medicina muncii pentru toți angajații', d:'Aviz la angajare + control periodic. Fără aviz apt, angajatul nu poate lucra.', termen:'la angajare + anual', act:'Programează' },
+    { n:9, t:'Instruirea PSI / situații de urgență', d:'Prevenirea incendiilor — obligatorie separat de SSM (Legea 307/2006).', termen:'periodic', act:'Configurează' },
+  ]
+  const rezolvate = Object.values(done).filter(Boolean).length
+  return (
+    <div style={{display:'flex',flexDirection:'column',gap:16,maxWidth:680}}>
+      <div>
+        <span style={{fontFamily:C.mono,fontSize:11,letterSpacing:'0.06em',textTransform:'uppercase',color:C.green}}>Modul consultant · firmă sub 10 angajați</span>
+        <h2 style={{margin:'6px 0 4px',fontSize:24,fontWeight:800,letterSpacing:'-0.02em',color:C.t0}}>Planul tău SSM</h2>
+        <div style={{fontSize:14,color:C.t2,lineHeight:1.5}}>{firma?.nume ? firma.nume+' · ' : ''}Tot ce îți cere legea, pas cu pas, fără termeni juridici.</div>
+      </div>
+      <div style={{background:C.white,borderRadius:C.r,padding:'16px 18px',boxShadow:C.shadow,display:'flex',alignItems:'center',gap:14}}>
+        <div style={{flex:1}}>
+          <div style={{fontSize:14,fontWeight:800,color:C.t0,marginBottom:6}}>{rezolvate} din {obligatii.length} obligații rezolvate</div>
+          <div style={{height:7,background:'#EEEDE9',borderRadius:999,overflow:'hidden'}}>
+            <div style={{width:`${Math.round(rezolvate/obligatii.length*100)}%`,height:'100%',background:C.green,borderRadius:999,transition:'width .4s'}} />
+          </div>
+        </div>
+        <span style={{fontFamily:C.mono,fontSize:18,fontWeight:700,color:C.green}}>{Math.round(rezolvate/obligatii.length*100)}%</span>
+      </div>
+      {obligatii.map(o => {
+        const ok = done[o.n]
+        return (
+          <div key={o.n} style={{background:C.white,borderRadius:C.r,padding:'16px 18px',boxShadow:C.shadow,display:'flex',gap:14,alignItems:'flex-start',opacity:ok?0.6:1,transition:'opacity .2s'}}>
+            <span onClick={()=>setDone({...done,[o.n]:!ok})}
+              style={{width:32,height:32,borderRadius:999,flexShrink:0,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontSize:ok?15:13,fontWeight:800,
+                background:ok?C.green:'#16191C',color:'#fff'}}>
+              {ok?'✓':o.n}
+            </span>
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:10,flexWrap:'wrap'}}>
+                <strong style={{fontSize:15,fontWeight:700,color:C.t0}}>{o.t}</strong>
+                <span style={{fontFamily:C.mono,fontSize:10,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.04em',color:C.amber,background:C.amberBg,padding:'4px 9px',borderRadius:999,whiteSpace:'nowrap'}}>{o.termen}</span>
+              </div>
+              <div style={{fontSize:13,color:C.t2,lineHeight:1.55,marginTop:4}}>{o.d}</div>
+              {!ok && <button style={{marginTop:10,border:'none',background:'#16191C',color:'#fff',fontFamily:'inherit',fontSize:13,fontWeight:700,padding:'9px 16px',borderRadius:11,cursor:'pointer'}}>{o.act} →</button>}
+            </div>
+          </div>
+        )
+      })}
+      <div style={{background:C.bg,border:`1px solid ${C.line}`,borderRadius:C.rs,padding:'12px 15px'}}>
+        <span style={{fontFamily:C.mono,fontSize:10,letterSpacing:'0.06em',textTransform:'uppercase',color:C.t3,display:'block',marginBottom:5}}>De ce e posibil</span>
+        <span style={{fontSize:13,color:C.t1,lineHeight:1.6}}>Sub 10 angajați și activitate fără riscuri deosebite, administratorul poate îndeplini singur atribuțiile SSM (HG 1425/2006 art. 12) — cu cursul de 40h. SafeWork ține locul serviciului extern pentru documente, termene și instruiri.</span>
+      </div>
+    </div>
+  )
+}
+
+/* ═══════════════════════════════════════
    APP SHELL (post-login)
 ═══════════════════════════════════════ */
 function AppShell({ user, appCfg, onLogout }) {
@@ -2132,8 +2184,9 @@ function AppShell({ user, appCfg, onLogout }) {
   const isMobile = width < 768
 
   const TABS = [
-    {id:'dashboard',label:'Dashboard',icon:'📊'},
-    {id:'documente',label:'Documente',icon:'📁'},
+    {id:'dashboard',label:'Panou',icon:'📊'},
+    ...((firma?.angajati||10) < 10 ? [{id:'plan',label:'Planul SSM',icon:'🧭'}] : []),
+    {id:'documente',label:'Fișe & documente',icon:'📁'},
     {id:'instruiri',label:'Instruiri',icon:'📚'},
     {id:'materiale',label:'Materiale & Teste',icon:'🎬'},
     {id:'medicina',label:'Med. muncii',icon:'🩺'},
@@ -2142,8 +2195,8 @@ function AppShell({ user, appCfg, onLogout }) {
     {id:'arhiva',label:'Arhivă',icon:'🗄'},
     {id:'structura',label:'Structură',icon:'🏢'},
     {id:'legislatie',label:'Legislație',icon:'⚖️'},
-    ...(modules.nearMiss?[{id:'nearmiss',label:'Near Miss',icon:'⚠️'}]:[]),
-    ...(modules.audit?[{id:'audit',label:'Audit',icon:'🔍'}]:[]),
+    ...(modules.nearMiss?[{id:'nearmiss',label:'Incidente',icon:'⚠️'}]:[]),
+    ...(modules.audit?[{id:'audit',label:'Audit ITM',icon:'🔍'}]:[]),
     {id:'setari',label:'Setări',icon:'⚙️'},
   ]
   const [helpdesk,setHelpdesk] = useState(false)
@@ -2152,6 +2205,7 @@ function AppShell({ user, appCfg, onLogout }) {
   const renderTab = () => {
     switch(tab) {
       case 'dashboard': return <ModDashboard firma={firma} modules={modules} instruiriCfg={instrCfg} ind={ind} />
+      case 'plan':      return <ModPlanSSM firma={firma} cons={appCfg?.cons} />
       case 'documente': return <ModDocumente modules={modules} />
       case 'instruiri': return <ModInstruiri instruiriCfg={instrCfg} modules={modules} ind={ind} />
       case 'materiale': return <ModMateriale />
@@ -2174,61 +2228,90 @@ function AppShell({ user, appCfg, onLogout }) {
   }
 
   return (
-    <div style={{height:'100vh',display:'flex',flexDirection:'column',background:C.bg,overflow:'hidden'}}>
-      {/* Top bar */}
-      <div style={{background:C.white,borderBottom:`1px solid ${C.line}`,height:54,padding:'0 20px',display:'flex',alignItems:'center',justifyContent:'space-between',flexShrink:0,boxShadow:C.shadow}}>
-        <Logo />
-        <div style={{display:'flex',alignItems:'center',gap:10}}>
-          <button onClick={()=>setHelpdesk(true)} title='Suport tehnic permanent'
-            style={{padding:'7px 14px',background:C.tealBg,border:`1.5px solid ${C.teal}44`,borderRadius:C.rs,color:C.teal,fontSize:12,fontWeight:700,cursor:'pointer',display:'flex',alignItems:'center',gap:6}}>
-            🎧 {!isMobile && 'Suport'}
-          </button>
-          {!isMobile && (
-            <div style={{textAlign:'right'}}>
-              <div style={{fontSize:12,fontWeight:700,color:C.t0}}>{user?.name || 'Manager SSM'}</div>
-              <div style={{fontSize:10,color:C.primary}}>{firma?.nume || 'Firma dvs.'}</div>
-            </div>
-          )}
+    <div style={{fontFamily:'Manrope, sans-serif',height:'100vh',display:'flex',flexDirection:isMobile?'column':'row',background:C.bg,color:C.t0,overflow:'hidden'}}>
+      {helpdesk && <HelpdeskModal onClose={()=>setHelpdesk(false)} />}
+
+      {!isMobile && (
+        <div style={{width:210,background:C.bg,borderRight:'1px solid #EEEDE9',padding:'18px 14px',display:'flex',flexDirection:'column',gap:16,flexShrink:0,boxSizing:'border-box'}}>
+          <div style={{display:'flex',alignItems:'center',gap:9}}>
+            <span style={{width:26,height:26,borderRadius:8,background:'#16191C',flexShrink:0}} />
+            <strong style={{fontSize:15,fontWeight:800,color:C.t0}}>SSM</strong>
+            <span style={{marginLeft:'auto',display:'flex',border:`1px solid ${C.lineHi}`,borderRadius:6,overflow:'hidden',fontFamily:C.mono,fontSize:10}}>
+              <span style={{padding:'3px 6px',background:'#16191C',color:'#fff'}}>RO</span>
+              <span style={{padding:'3px 6px',color:C.t3,cursor:'pointer'}}>EN</span>
+            </span>
+          </div>
+          <div style={{flex:1,display:'flex',flexDirection:'column',gap:2,overflowY:'auto'}}>
+            {TABS.map(t => (
+              <span key={t.id} onClick={()=>setTab(t.id)}
+                style={{padding:'9px 11px',borderRadius:9,cursor:'pointer',fontSize:13,
+                  background:tab===t.id?C.white:'transparent',
+                  fontWeight:tab===t.id?700:400,
+                  color:tab===t.id?C.t0:C.t2,
+                  boxShadow:tab===t.id?'0 1px 2px rgba(22,25,28,0.06)':'none'}}>
+                {t.label}
+              </span>
+            ))}
+          </div>
+          <div onClick={()=>setHelpdesk(true)}
+            style={{padding:'9px 11px',borderRadius:9,cursor:'pointer',fontSize:12,color:C.t2,border:`1px dashed ${C.lineHi}`,textAlign:'center'}}>
+            🎧 Suport permanent
+          </div>
           <div style={{position:'relative'}}>
-            <div onClick={()=>setUserMenu(!userMenu)} style={{cursor:'pointer',borderRadius:'50%',border:`2px solid ${userMenu?C.primary:'transparent'}`,transition:'border-color .15s'}}>
-              <Ava name={user?.name || 'Manager SSM'} size={32} />
+            <div onClick={()=>setUserMenu(!userMenu)}
+              style={{display:'flex',gap:9,alignItems:'center',padding:'8px 9px',borderRadius:11,cursor:'pointer',background:userMenu?C.white:'transparent',boxShadow:userMenu?'0 1px 2px rgba(22,25,28,0.06)':'none'}}>
+              <Ava name={user?.name || 'Manager SSM'} size={30} />
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontSize:12,fontWeight:700,color:C.t0,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{user?.name || 'Manager SSM'}</div>
+                <div style={{fontFamily:C.mono,fontSize:9,color:C.t3,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{firma?.nume || 'Firma dvs.'}</div>
+              </div>
+              <span style={{fontSize:10,color:C.t3}}>▾</span>
             </div>
             {userMenu && (
               <>
                 <div onClick={()=>setUserMenu(false)} style={{position:'fixed',inset:0,zIndex:998}} />
-                <div style={{position:'absolute',top:42,right:0,background:C.white,border:`1px solid ${C.line}`,borderRadius:C.rs,boxShadow:'0 8px 30px rgba(0,0,0,0.15)',minWidth:200,zIndex:999,overflow:'hidden'}}>
-                  <div style={{padding:'12px 16px',borderBottom:`1px solid ${C.line}`,background:'#F8FAFC'}}>
-                    <div style={{fontSize:13,fontWeight:700,color:C.t0}}>{user?.name || 'Manager SSM'}</div>
-                    <div style={{fontSize:11,color:C.t2,marginTop:2}}>{user?.email || ''}</div>
-                  </div>
-                  <button onClick={()=>{setTab('setari');setUserMenu(false)}} style={{width:'100%',padding:'11px 16px',background:'none',border:'none',textAlign:'left',fontSize:13,color:C.t1,cursor:'pointer',display:'flex',alignItems:'center',gap:8}}
-                    onMouseEnter={e=>e.currentTarget.style.background='#F8FAFC'} onMouseLeave={e=>e.currentTarget.style.background='none'}>
-                    ⚙️ Setări
-                  </button>
-                  <button onClick={onLogout} style={{width:'100%',padding:'11px 16px',background:'none',border:'none',borderTop:`1px solid ${C.line}`,textAlign:'left',fontSize:13,color:C.red,fontWeight:600,cursor:'pointer',display:'flex',alignItems:'center',gap:8}}
-                    onMouseEnter={e=>e.currentTarget.style.background=C.redBg} onMouseLeave={e=>e.currentTarget.style.background='none'}>
-                    🔴 Deconectare
-                  </button>
+                <div style={{position:'absolute',bottom:52,left:0,right:0,background:C.white,border:`1px solid ${C.line}`,borderRadius:12,boxShadow:'0 8px 30px rgba(22,25,28,0.12)',zIndex:999,overflow:'hidden'}}>
+                  <button onClick={()=>{setTab('setari');setUserMenu(false)}} style={{width:'100%',padding:'11px 14px',background:'none',border:'none',textAlign:'left',fontSize:13,color:C.t1,cursor:'pointer',fontFamily:'inherit'}}>⚙️ Setări</button>
+                  <button onClick={onLogout} style={{width:'100%',padding:'11px 14px',background:'none',border:'none',borderTop:`1px solid ${C.line}`,textAlign:'left',fontSize:13,color:C.red,fontWeight:700,cursor:'pointer',fontFamily:'inherit'}}>Deconectare</button>
                 </div>
               </>
             )}
           </div>
         </div>
-      </div>
-      {helpdesk && <HelpdeskModal onClose={()=>setHelpdesk(false)} />}
+      )}
 
-      {/* Tab bar */}
-      <div style={{background:C.white,borderBottom:`1px solid ${C.line}`,display:'flex',overflowX:'auto',flexShrink:0}}>
-        {TABS.map(t => (
-          <button key={t.id} onClick={()=>setTab(t.id)}
-            style={{padding:isMobile?'10px 12px':'12px 20px',display:'flex',alignItems:'center',gap:6,background:'none',border:'none',borderBottom:`3px solid ${tab===t.id?C.primary:'transparent'}`,color:tab===t.id?C.primary:C.t2,fontSize:isMobile?11:12,fontWeight:tab===t.id?700:500,cursor:'pointer',whiteSpace:'nowrap',flexShrink:0,transition:'color .15s'}}>
-            <span>{t.icon}</span>{!isMobile && t.label}
-          </button>
-        ))}
-      </div>
+      {isMobile && (
+        <>
+          <div style={{background:C.white,borderBottom:`1px solid ${C.line}`,height:52,padding:'0 16px',display:'flex',alignItems:'center',justifyContent:'space-between',flexShrink:0}}>
+            <Logo />
+            <div style={{display:'flex',alignItems:'center',gap:10}}>
+              <button onClick={()=>setHelpdesk(true)} style={{background:'none',border:'none',fontSize:17,cursor:'pointer'}}>🎧</button>
+              <div style={{position:'relative'}}>
+                <div onClick={()=>setUserMenu(!userMenu)} style={{cursor:'pointer'}}><Ava name={user?.name || 'Manager SSM'} size={30} /></div>
+                {userMenu && (
+                  <>
+                    <div onClick={()=>setUserMenu(false)} style={{position:'fixed',inset:0,zIndex:998}} />
+                    <div style={{position:'absolute',top:38,right:0,background:C.white,border:`1px solid ${C.line}`,borderRadius:12,boxShadow:'0 8px 30px rgba(22,25,28,0.12)',minWidth:180,zIndex:999,overflow:'hidden'}}>
+                      <button onClick={()=>{setTab('setari');setUserMenu(false)}} style={{width:'100%',padding:'11px 14px',background:'none',border:'none',textAlign:'left',fontSize:13,color:C.t1,cursor:'pointer',fontFamily:'inherit'}}>⚙️ Setări</button>
+                      <button onClick={onLogout} style={{width:'100%',padding:'11px 14px',background:'none',border:'none',borderTop:`1px solid ${C.line}`,textAlign:'left',fontSize:13,color:C.red,fontWeight:700,cursor:'pointer',fontFamily:'inherit'}}>Deconectare</button>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+          <div style={{background:C.white,borderBottom:`1px solid ${C.line}`,display:'flex',overflowX:'auto',flexShrink:0,padding:'0 8px'}}>
+            {TABS.map(t => (
+              <button key={t.id} onClick={()=>setTab(t.id)}
+                style={{padding:'11px 13px',background:'none',border:'none',borderBottom:`2px solid ${tab===t.id?'#16191C':'transparent'}`,color:tab===t.id?C.t0:C.t2,fontSize:12,fontWeight:tab===t.id?700:400,cursor:'pointer',whiteSpace:'nowrap',flexShrink:0,fontFamily:'inherit'}}>
+                {t.label}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
 
-      {/* Content */}
-      <div style={{flex:1,overflowY:'auto',padding:isMobile?'14px 12px':'22px 28px'}}>
+      <div style={{flex:1,overflowY:'auto',padding:isMobile?'16px 14px':'26px 32px'}}>
         <div style={{maxWidth:1000,margin:'0 auto'}}>{renderTab()}</div>
       </div>
     </div>
