@@ -486,6 +486,10 @@ function PageLogin({ onLogin, goReg, goForgot }) {
       <div style={{padding:'10px 14px',background:C.primaryBg,borderRadius:C.rx,border:`1px solid ${C.primary}33`,fontSize:11,color:C.primary}}>
         💡 <strong>Demo:</strong> orice email + parolă cu min. 6 caractere
       </div>
+      <button onClick={()=>onLogin({email:'andrei@firma.ro',name:'Andrei Vasile',role:'angajat'})}
+        style={{width:'100%',padding:'13px 16px',background:'none',border:`2px dashed ${C.lineHi}`,borderRadius:C.rs,fontSize:13,fontWeight:700,color:C.t1,cursor:'pointer',fontFamily:'inherit',display:'flex',alignItems:'center',justifyContent:'center',gap:8}}>
+        👷 Intră ca angajat <span style={{fontFamily:C.mono,fontSize:10,color:C.t3}}>(demo mobil)</span>
+      </button>
     </div>
   )
 }
@@ -2111,6 +2115,523 @@ function HelpdeskModal({ onClose }) {
 }
 
 /* ═══════════════════════════════════════
+   APLICAȚIA ANGAJAT — mobil (M1–M9)
+═══════════════════════════════════════ */
+function EmpCTA({ label, onClick, outline, disabled }) {
+  return (
+    <button onClick={onClick} disabled={disabled}
+      style={{border:outline?`1.5px solid ${C.lineHi}`:'none',background:disabled?'#D5D2CA':outline?'#FFFFFF':'#16191C',color:outline?C.t0:'#FFFFFF',fontFamily:'inherit',fontSize:15,fontWeight:700,padding:14,borderRadius:14,cursor:disabled?'not-allowed':'pointer',minHeight:48,width:'100%'}}>
+      {label}
+    </button>
+  )
+}
+
+function EmpPill({ label, tone='amber' }) {
+  const m = { amber:[C.amber,'oklch(0.93 0.05 85)'], green:[C.teal,C.greenBg], red:[C.red,C.redBg], gray:[C.t2,'#EEEDE9'] }
+  const [fg,bg] = m[tone]
+  return <span style={{fontSize:11,fontWeight:700,color:fg,background:bg,padding:'5px 9px',borderRadius:999,whiteSpace:'nowrap'}}>{label}</span>
+}
+
+function EmpCard({ children, style={} }) {
+  return <div style={{background:'#FFFFFF',borderRadius:18,padding:16,display:'flex',flexDirection:'column',gap:12,boxShadow:'0 1px 2px rgba(22,25,28,0.06)',...style}}>{children}</div>
+}
+
+function EmployeeApp({ user, onLogout }) {
+  const [tab,setTab]   = useState('acasa')
+  const [flow,setFlow] = useState(null) // {type, training}
+  const [trainings,setTrainings] = useState([
+    { id:'iig', label:'Instructaj introductiv-general (IIG)', sub:'6 module · ~35 min', mat:0, test:0, modDone:0, signed:false },
+    { id:'ilm', label:'Instructaj la locul de muncă (ILM)',   sub:'5 module · ~25 min', mat:1, test:1, modDone:0, signed:false, blockedBy:'iig' },
+    { id:'per', label:'Instruire periodică — Trim. III',      sub:'4 module · termen 3 zile', mat:2, test:1, modDone:1, signed:false },
+  ])
+  const [incidentSent,setIncidentSent] = useState(false)
+  const [medBooked,setMedBooked] = useState(null)
+
+  const upd = (id, patch) => setTrainings(ts => ts.map(t => t.id===id ? {...t,...patch} : t))
+  const onboarding = !trainings[0].signed || !trainings[1].signed
+  const openTraining = (t) => {
+    if (t.blockedBy && !trainings.find(x=>x.id===t.blockedBy)?.signed) return
+    setFlow({ type:'modul', training:t.id })
+  }
+
+  const T = (id) => trainings.find(t=>t.id===id)
+  const statusZone = (right) => (
+    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'14px 22px 6px',fontSize:12,fontWeight:600,color:C.t0}}>
+      <span>{new Date().toLocaleTimeString('ro-RO',{hour:'2-digit',minute:'2-digit'})}</span>
+      <span style={{fontFamily:C.mono,fontSize:10,color:right?C.t3:C.green}}>{right || '● offline ok'}</span>
+    </div>
+  )
+
+  /* ── M2 + M3 + M4 + M5: fluxul de instruire full-screen ── */
+  if (flow) {
+    const t = T(flow.training)
+    const mat = MATERIALE_DB[t.mat]
+    const test = TESTE_DB[t.test]
+
+    if (flow.type === 'modul') {
+      const cap = mat.capitole
+      const cur = Math.min(t.modDone, cap.length-1)
+      const [titlu, continut] = cap[cur]
+      const last = t.modDone >= cap.length-1
+      return (
+        <div style={{fontFamily:'Manrope, sans-serif',minHeight:'100vh',background:C.bg,display:'flex',flexDirection:'column',maxWidth:430,margin:'0 auto'}}>
+          {statusZone()}
+          <div style={{padding:'8px 22px 4px',display:'flex',alignItems:'center',gap:10}}>
+            <button onClick={()=>setFlow(null)} style={{background:'none',border:'none',fontSize:20,color:C.t0,cursor:'pointer',padding:0}}>←</button>
+            <div style={{flex:1}}>
+              <div style={{fontFamily:C.mono,fontSize:10,letterSpacing:'0.06em',textTransform:'uppercase',color:C.green}}>Modulul {cur+1} din {cap.length}</div>
+              <strong style={{fontSize:15,fontWeight:800,color:C.t0}}>{t.label}</strong>
+            </div>
+          </div>
+          <div style={{padding:'10px 22px 0'}}>
+            <div style={{height:6,background:'#EEEDE9',borderRadius:999,overflow:'hidden'}}>
+              <div style={{width:`${Math.round((cur)/cap.length*100)}%`,height:'100%',background:C.green,transition:'width .3s'}} />
+            </div>
+          </div>
+          <div style={{flex:1,overflowY:'auto',padding:'16px 16px 16px'}}>
+            <EmpCard>
+              <strong style={{fontSize:17,fontWeight:800,color:C.t0,letterSpacing:'-0.01em'}}>{titlu}</strong>
+              <span style={{fontSize:14,lineHeight:1.7,color:C.t1}}>{continut}</span>
+              <div style={{background:C.bg,borderRadius:12,padding:'10px 13px'}}>
+                <span style={{fontFamily:C.mono,fontSize:9,letterSpacing:'0.06em',textTransform:'uppercase',color:C.t3,display:'block',marginBottom:4}}>De reținut</span>
+                <span style={{fontSize:13,color:C.t1,lineHeight:1.55}}>Conținutul funcționează și offline — progresul se sincronizează când revine semnalul.</span>
+              </div>
+            </EmpCard>
+          </div>
+          <div style={{padding:'0 16px 20px'}}>
+            {!last
+              ? <EmpCTA label={`Continuă — modulul ${cur+2}`} onClick={()=>upd(t.id,{modDone:t.modDone+1})} />
+              : <EmpCTA label='Începe testul de verificare' onClick={()=>setFlow({type:'test',training:t.id,qi:0,ans:{}})} />}
+          </div>
+        </div>
+      )
+    }
+
+    if (flow.type === 'test') {
+      const qi = flow.qi || 0
+      const ans = flow.ans || {}
+      const done = qi >= test.intrebari.length
+      if (done) {
+        const corecte = test.intrebari.filter((q,i)=>ans[i]===q.c).length
+        const scor = Math.round(corecte/test.intrebari.length*100)
+        const promovat = scor >= test.prag
+        return (
+          <div style={{fontFamily:'Manrope, sans-serif',minHeight:'100vh',background:C.bg,display:'flex',flexDirection:'column',maxWidth:430,margin:'0 auto'}}>
+            {statusZone()}
+            <div style={{flex:1,display:'flex',flexDirection:'column',justifyContent:'center',padding:16,gap:14}}>
+              <EmpCard style={{alignItems:'center',textAlign:'center',padding:28}}>
+                <span style={{fontSize:46}}>{promovat?'🎉':'😕'}</span>
+                <strong style={{fontSize:34,fontWeight:800,color:promovat?C.teal:C.red}}>{scor}%</strong>
+                <span style={{fontSize:14,color:C.t1}}>{corecte} din {test.intrebari.length} corecte · prag {test.prag}%</span>
+                <span style={{fontSize:15,fontWeight:800,color:promovat?C.teal:C.red}}>{promovat?'Test promovat':'Nepromovat — mai încearcă'}</span>
+                {!promovat && <span style={{fontSize:13,color:C.t2,lineHeight:1.5}}>Poți relua modulele și testul oricând. Instructajul se consideră finalizat doar după promovare.</span>}
+              </EmpCard>
+              {promovat
+                ? <EmpCTA label='Semnează fișa de instruire →' onClick={()=>setFlow({type:'semnatura',training:t.id})} />
+                : <>
+                    <EmpCTA label='Reia testul' onClick={()=>setFlow({type:'test',training:t.id,qi:0,ans:{}})} />
+                    <EmpCTA label='Înapoi la module' outline onClick={()=>{upd(t.id,{modDone:0});setFlow({type:'modul',training:t.id})}} />
+                  </>}
+            </div>
+          </div>
+        )
+      }
+      const q = test.intrebari[qi]
+      const sel = ans[qi]
+      return (
+        <div style={{fontFamily:'Manrope, sans-serif',minHeight:'100vh',background:C.bg,display:'flex',flexDirection:'column',maxWidth:430,margin:'0 auto'}}>
+          {statusZone()}
+          <div style={{padding:'8px 22px 0'}}>
+            <div style={{fontFamily:C.mono,fontSize:10,letterSpacing:'0.06em',textTransform:'uppercase',color:C.green,marginBottom:8}}>Întrebarea {qi+1} din {test.intrebari.length}</div>
+            <div style={{height:6,background:'#EEEDE9',borderRadius:999,overflow:'hidden'}}>
+              <div style={{width:`${Math.round(qi/test.intrebari.length*100)}%`,height:'100%',background:C.green,transition:'width .3s'}} />
+            </div>
+          </div>
+          <div style={{flex:1,overflowY:'auto',padding:16,display:'flex',flexDirection:'column',gap:12}}>
+            <EmpCard>
+              <strong style={{fontSize:17,fontWeight:800,color:C.t0,lineHeight:1.35}}>{q.q}</strong>
+            </EmpCard>
+            {q.a.map((opt,oi) => (
+              <div key={oi} onClick={()=>setFlow({...flow,ans:{...ans,[qi]:oi}})}
+                style={{background:'#FFFFFF',border:`2px solid ${sel===oi?'#16191C':'transparent'}`,borderRadius:14,padding:'15px 16px',fontSize:14,fontWeight:sel===oi?700:500,color:C.t0,cursor:'pointer',minHeight:48,display:'flex',alignItems:'center',gap:10,boxShadow:'0 1px 2px rgba(22,25,28,0.06)'}}>
+                <span style={{width:18,height:18,borderRadius:999,border:`2px solid ${sel===oi?'#16191C':C.lineHi}`,background:sel===oi?'#16191C':'transparent',flexShrink:0}} />
+                {opt}
+              </div>
+            ))}
+          </div>
+          <div style={{padding:'0 16px 20px'}}>
+            <EmpCTA label={qi===test.intrebari.length-1?'Finalizează testul':'Următoarea întrebare'} disabled={sel===undefined} onClick={()=>setFlow({...flow,qi:qi+1})} />
+          </div>
+        </div>
+      )
+    }
+
+    if (flow.type === 'semnatura') {
+      return <EmpSemnatura t={t} onDone={()=>{upd(t.id,{signed:true});setFlow({type:'fisa',training:t.id})}} onBack={()=>setFlow(null)} statusZone={statusZone} />
+    }
+
+    if (flow.type === 'fisa') {
+      return (
+        <div style={{fontFamily:'Manrope, sans-serif',minHeight:'100vh',background:C.bg,display:'flex',flexDirection:'column',maxWidth:430,margin:'0 auto'}}>
+          {statusZone('sincronizat la '+new Date().toLocaleTimeString('ro-RO',{hour:'2-digit',minute:'2-digit'}))}
+          <div style={{flex:1,display:'flex',flexDirection:'column',justifyContent:'center',padding:16,gap:14}}>
+            <EmpCard style={{padding:24}}>
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+                <span style={{fontSize:36}}>📄</span>
+                <EmpPill label='✓ Semnată' tone='green' />
+              </div>
+              <strong style={{fontSize:19,fontWeight:800,color:C.t0,letterSpacing:'-0.01em'}}>Fișă de instruire individuală</strong>
+              <span style={{fontSize:13,color:C.t2,lineHeight:1.55}}>Generată automat conform modelului din Anexa nr. 11, HG 1425/2006. Arhivată în dosarul tău și vizibilă responsabilului SSM.</span>
+              <div style={{borderTop:`1px solid ${C.line}`,paddingTop:12,display:'flex',flexDirection:'column',gap:7}}>
+                {[['Angajat',user?.name||'Andrei Vasile'],['Instructaj',t.label],['Data',new Date().toLocaleDateString('ro-RO')],['Semnătură','pe ecran · IP înregistrat']].map(([k,v]) => (
+                  <div key={k} style={{display:'flex',justifyContent:'space-between',gap:10}}>
+                    <span style={{fontFamily:C.mono,fontSize:10,textTransform:'uppercase',letterSpacing:'0.05em',color:C.t3}}>{k}</span>
+                    <span style={{fontSize:13,fontWeight:600,color:C.t0,textAlign:'right'}}>{v}</span>
+                  </div>
+                ))}
+              </div>
+            </EmpCard>
+            <EmpCTA label='Descarcă fișa (PDF)' outline />
+            <EmpCTA label='Gata — înapoi acasă' onClick={()=>{setFlow(null);setTab('acasa')}} />
+          </div>
+        </div>
+      )
+    }
+
+    if (flow.type === 'medicina') {
+      return <EmpMedicina onBook={(slot)=>{setMedBooked(slot);setFlow(null)}} onBack={()=>setFlow(null)} statusZone={statusZone} />
+    }
+  }
+
+  /* ── ecranele principale cu tab bar ── */
+  const screens = {
+    acasa: onboarding ? (
+      /* M7 — Onboarding prima zi */
+      <div style={{display:'flex',flexDirection:'column',gap:12}}>
+        <div style={{padding:'0 6px'}}>
+          <span style={{fontFamily:C.mono,fontSize:11,letterSpacing:'0.06em',textTransform:'uppercase',color:C.green}}>Bun venit</span>
+          <strong style={{display:'block',fontSize:23,fontWeight:800,letterSpacing:'-0.02em',color:C.t0,margin:'4px 0'}}>Înainte să începi lucrul</strong>
+          <span style={{fontSize:14,lineHeight:1.5,color:C.t2}}>3 pași obligatorii. Durează cam 45 de minute.</span>
+        </div>
+        <EmpCard style={{flexDirection:'row',alignItems:'center',gap:13}}>
+          <span style={{width:34,height:34,borderRadius:999,background:C.green,color:'#fff',fontSize:16,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>✓</span>
+          <div style={{flex:1}}><strong style={{fontSize:15,fontWeight:700,color:C.t0}}>Datele tale</strong><div style={{fontSize:13,color:C.t2}}>CI, post, punct de lucru — confirmate</div></div>
+        </EmpCard>
+        <div style={{background:'#FFFFFF',border:T('iig').signed?'none':'2px solid #16191C',borderRadius:18,padding:16,display:'flex',flexDirection:'column',gap:12,boxShadow:'0 1px 2px rgba(22,25,28,0.06)',opacity:1}}>
+          <div style={{display:'flex',gap:13,alignItems:'center'}}>
+            <span style={{width:34,height:34,borderRadius:999,background:T('iig').signed?C.green:'#16191C',color:'#fff',fontSize:T('iig').signed?16:14,fontWeight:800,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>{T('iig').signed?'✓':'2'}</span>
+            <div style={{flex:1}}><strong style={{fontSize:15,fontWeight:700,color:C.t0}}>Instruirea introductiv-generală</strong><div style={{fontSize:13,color:C.t2}}>{T('iig').sub} + test</div></div>
+          </div>
+          {!T('iig').signed && <EmpCTA label={T('iig').modDone>0?'Continuă instruirea':'Începe instruirea'} onClick={()=>openTraining(T('iig'))} />}
+        </div>
+        <div style={{background:'#FFFFFF',borderRadius:18,padding:16,display:'flex',gap:13,alignItems:'center',boxShadow:'0 1px 2px rgba(22,25,28,0.06)',opacity:T('iig').signed?1:0.55,border:T('iig').signed&&!T('ilm').signed?'2px solid #16191C':'none'}}>
+          <span style={{width:34,height:34,borderRadius:999,background:T('ilm').signed?C.green:T('iig').signed?'#16191C':'#D5D2CA',color:'#fff',fontSize:14,fontWeight:800,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>{T('ilm').signed?'✓':'3'}</span>
+          <div style={{flex:1}}>
+            <strong style={{fontSize:15,fontWeight:700,color:C.t0}}>Instruirea la locul de muncă</strong>
+            <div style={{fontSize:13,color:C.t2}}>{T('iig').signed ? T('ilm').sub : 'Se deblochează după pasul 2'}</div>
+          </div>
+          {T('iig').signed && !T('ilm').signed && <button onClick={()=>openTraining(T('ilm'))} style={{border:'none',background:'#16191C',color:'#fff',fontFamily:'inherit',fontSize:13,fontWeight:700,padding:'10px 14px',borderRadius:11,cursor:'pointer'}}>Începe</button>}
+        </div>
+        <div style={{background:C.bg,border:`1px solid ${C.line}`,borderRadius:12,padding:'10px 13px'}}>
+          <span style={{fontFamily:C.mono,fontSize:9,letterSpacing:'0.06em',textTransform:'uppercase',color:C.t3,display:'block',marginBottom:4}}>De ce e obligatoriu</span>
+          <span style={{fontSize:12,color:C.t1,lineHeight:1.55}}>Nu poți începe lucrul fără cele două instruiri semnate — HG 1425/2006.</span>
+        </div>
+        <div style={{padding:'4px 6px'}}>
+          <div style={{display:'flex',justifyContent:'space-between',marginBottom:6}}>
+            <span style={{fontSize:12,color:C.t2}}>Progres prima zi</span>
+            <span style={{fontFamily:C.mono,fontSize:11,fontWeight:600,color:C.t0}}>{Math.round((1+(T('iig').signed?1:0)+(T('ilm').signed?1:0))/3*100)}%</span>
+          </div>
+          <div style={{height:6,background:'#EEEDE9',borderRadius:999,overflow:'hidden'}}>
+            <div style={{width:`${Math.round((1+(T('iig').signed?1:0)+(T('ilm').signed?1:0))/3*100)}%`,height:'100%',background:C.green,transition:'width .4s'}} />
+          </div>
+        </div>
+      </div>
+    ) : (
+      /* M1 — Acasă */
+      <div style={{display:'flex',flexDirection:'column',gap:12}}>
+        <div style={{padding:'0 6px'}}>
+          <span style={{fontSize:13,color:C.t2}}>Bună, {user?.name?.split(' ')[0] || 'Andrei'}</span>
+          <strong style={{display:'block',fontSize:24,fontWeight:800,letterSpacing:'-0.02em',color:C.t0}}>
+            {T('per').signed && medBooked ? 'Ești la zi ✓' : `Ai ${(T('per').signed?0:1)+(medBooked?0:1)} lucruri de făcut`}
+          </strong>
+        </div>
+        {!T('per').signed && (
+          <EmpCard>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:10}}>
+              <div><strong style={{fontSize:16,fontWeight:700,color:C.t0}}>Instruire periodică</strong><div style={{fontSize:13,color:C.t2}}>Trimestrul III · {MATERIALE_DB[2].capitole.length} module</div></div>
+              <EmpPill label='3 zile' />
+            </div>
+            <div style={{height:6,background:'#EEEDE9',borderRadius:999,overflow:'hidden'}}>
+              <div style={{width:`${Math.round(T('per').modDone/MATERIALE_DB[2].capitole.length*100)}%`,height:'100%',background:C.green}} />
+            </div>
+            <EmpCTA label={`Continuă modulul ${T('per').modDone+1}`} onClick={()=>openTraining(T('per'))} />
+          </EmpCard>
+        )}
+        <EmpCard>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:10}}>
+            <div><strong style={{fontSize:15,fontWeight:700,color:C.t0}}>Control medical periodic</strong><div style={{fontSize:13,color:C.t2}}>{medBooked ? `Programat: ${medBooked}` : 'Avizul expiră în 12 zile'}</div></div>
+            {medBooked ? <EmpPill label='✓ programat' tone='green' /> : <EmpPill label='expiră' />}
+          </div>
+          {!medBooked && <EmpCTA label='Programează' outline onClick={()=>setFlow({type:'medicina'})} />}
+        </EmpCard>
+        <EmpCard style={{flexDirection:'row',alignItems:'center',gap:12,cursor:'pointer'}} >
+          <span style={{fontSize:22}}>📄</span>
+          <div style={{flex:1}} onClick={()=>setTab('documente')}>
+            <strong style={{fontSize:14,fontWeight:700,color:C.t0}}>Documentele tale</strong>
+            <div style={{fontSize:12,color:C.t2}}>{2+trainings.filter(t=>t.signed).length} documente · toate la zi · disponibile offline</div>
+          </div>
+          <span style={{color:C.t3}}>→</span>
+        </EmpCard>
+      </div>
+    ),
+
+    instruiri: (
+      /* Instruiri — lista atribuită */
+      <div style={{display:'flex',flexDirection:'column',gap:12}}>
+        <strong style={{fontSize:20,fontWeight:800,color:C.t0,padding:'0 6px',letterSpacing:'-0.01em'}}>Instruirile tale</strong>
+        {trainings.map(t => {
+          const blocked = t.blockedBy && !T(t.blockedBy)?.signed
+          const nMod = MATERIALE_DB[t.mat].capitole.length
+          return (
+            <EmpCard key={t.id} style={{opacity:blocked?0.55:1}}>
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:10}}>
+                <div><strong style={{fontSize:15,fontWeight:700,color:C.t0}}>{t.label}</strong><div style={{fontSize:13,color:C.t2}}>{blocked?'Se deblochează după IIG':t.sub}</div></div>
+                {t.signed ? <EmpPill label='✓ semnată' tone='green' /> : blocked ? <EmpPill label='blocată' tone='gray' /> : t.modDone>0 ? <EmpPill label='în curs' /> : <EmpPill label='de făcut' />}
+              </div>
+              {!t.signed && !blocked && (
+                <>
+                  <div style={{height:6,background:'#EEEDE9',borderRadius:999,overflow:'hidden'}}>
+                    <div style={{width:`${Math.round(t.modDone/nMod*100)}%`,height:'100%',background:C.green}} />
+                  </div>
+                  <EmpCTA label={t.modDone>0?'Continuă':'Începe'} onClick={()=>openTraining(t)} />
+                </>
+              )}
+              {t.signed && <button onClick={()=>setFlow({type:'fisa',training:t.id})} style={{border:'none',background:'none',color:C.t0,fontFamily:'inherit',fontSize:13,fontWeight:700,cursor:'pointer',textDecoration:'underline',alignSelf:'flex-start',padding:0}}>Vezi fișa semnată →</button>}
+            </EmpCard>
+          )
+        })}
+      </div>
+    ),
+
+    raporteaza: incidentSent ? (
+      <div style={{display:'flex',flexDirection:'column',gap:14,justifyContent:'center',minHeight:'55vh'}}>
+        <EmpCard style={{alignItems:'center',textAlign:'center',padding:28}}>
+          <span style={{fontSize:44}}>✅</span>
+          <strong style={{fontSize:19,fontWeight:800,color:C.t0}}>Raport trimis</strong>
+          <span style={{fontSize:14,color:C.t2,lineHeight:1.55}}>Responsabilul SSM a fost notificat automat. Dacă ești offline, raportul se sincronizează când revine semnalul.</span>
+          <span style={{fontFamily:C.mono,fontSize:10,color:C.green}}>● salvat local · se sincronizează</span>
+        </EmpCard>
+        <EmpCTA label='Raportează altceva' outline onClick={()=>setIncidentSent(false)} />
+      </div>
+    ) : (
+      <EmpRaporteaza onSend={()=>setIncidentSent(true)} />
+    ),
+
+    documente: (
+      /* M9 — Documente */
+      <EmpDocumente trainings={trainings} medBooked={medBooked} user={user} />
+    ),
+  }
+
+  const tabs = [['acasa','🏠','Acasă'],['instruiri','📚','Instruiri'],['raporteaza','⚠️','Raportează'],['documente','📄','Documente']]
+
+  return (
+    <div style={{fontFamily:'Manrope, sans-serif',minHeight:'100vh',background:C.bg,display:'flex',flexDirection:'column',maxWidth:430,margin:'0 auto'}}>
+      {statusZone()}
+      <div style={{display:'flex',justifyContent:'flex-end',padding:'0 16px'}}>
+        <button onClick={onLogout} style={{background:'none',border:'none',fontFamily:C.mono,fontSize:10,color:C.t3,cursor:'pointer',textDecoration:'underline',padding:0}}>ieșire</button>
+      </div>
+      <div style={{flex:1,overflowY:'auto',padding:'10px 16px 90px'}}>
+        {screens[tab]}
+      </div>
+      <div style={{position:'fixed',bottom:0,left:'50%',transform:'translateX(-50%)',width:'100%',maxWidth:430,background:'#FFFFFF',borderTop:`1px solid ${C.line}`,display:'flex',padding:'6px 8px calc(10px + env(safe-area-inset-bottom))'}}>
+        {tabs.map(([id,icon,label]) => (
+          <button key={id} onClick={()=>setTab(id)}
+            style={{flex:1,minHeight:48,background:'none',border:'none',cursor:'pointer',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:3,fontFamily:'inherit',
+              color:tab===id?C.t0:C.t2,fontWeight:tab===id?800:500,fontSize:11,opacity:tab===id?1:0.75}}>
+            <span style={{fontSize:19}}>{icon}</span>{label}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/* M4 — Semnătură pe ecran */
+function EmpSemnatura({ t, onDone, onBack, statusZone }) {
+  const ref = useRef(null)
+  const [drawing,setDrawing] = useState(false)
+  const [has,setHas] = useState(false)
+  const pos = (e,cv) => { const r=cv.getBoundingClientRect(); const src=e.touches?e.touches[0]:e; return {x:src.clientX-r.left, y:src.clientY-r.top} }
+  const start = e => { const cv=ref.current; if(!cv)return; const ctx=cv.getContext('2d'); const p=pos(e,cv); ctx.beginPath(); ctx.moveTo(p.x,p.y); setDrawing(true); setHas(true); e.preventDefault() }
+  const move  = e => { if(!drawing)return; const cv=ref.current; const ctx=cv.getContext('2d'); const p=pos(e,cv); ctx.lineTo(p.x,p.y); ctx.strokeStyle='#16191C'; ctx.lineWidth=2.5; ctx.lineCap='round'; ctx.stroke(); e.preventDefault() }
+  const clear = () => { const cv=ref.current; cv.getContext('2d').clearRect(0,0,cv.width,cv.height); setHas(false) }
+  return (
+    <div style={{fontFamily:'Manrope, sans-serif',minHeight:'100vh',background:C.bg,display:'flex',flexDirection:'column',maxWidth:430,margin:'0 auto'}}>
+      {statusZone()}
+      <div style={{padding:'8px 22px 4px',display:'flex',alignItems:'center',gap:10}}>
+        <button onClick={onBack} style={{background:'none',border:'none',fontSize:20,color:C.t0,cursor:'pointer',padding:0}}>←</button>
+        <div>
+          <div style={{fontFamily:C.mono,fontSize:10,letterSpacing:'0.06em',textTransform:'uppercase',color:C.green}}>Ultimul pas</div>
+          <strong style={{fontSize:15,fontWeight:800,color:C.t0}}>Semnează fișa de instruire</strong>
+        </div>
+      </div>
+      <div style={{flex:1,padding:16,display:'flex',flexDirection:'column',gap:12,justifyContent:'center'}}>
+        <span style={{fontSize:13,color:C.t2,lineHeight:1.5,padding:'0 4px'}}>Semnătura ta se aplică pe fișa de instruire pentru <strong style={{color:C.t0}}>{t.label}</strong>. Se salvează local și se sincronizează când ai semnal.</span>
+        <div style={{background:'#FFFFFF',borderRadius:18,padding:12,boxShadow:'0 1px 2px rgba(22,25,28,0.06)'}}>
+          <canvas ref={ref} width={370} height={220}
+            onMouseDown={start} onMouseMove={move} onMouseUp={()=>setDrawing(false)} onMouseLeave={()=>setDrawing(false)}
+            onTouchStart={start} onTouchMove={move} onTouchEnd={()=>setDrawing(false)}
+            style={{width:'100%',height:220,border:`2px dashed ${C.lineHi}`,borderRadius:14,background:'#FAFAF8',touchAction:'none',display:'block',cursor:'crosshair'}} />
+          <div style={{display:'flex',justifyContent:'space-between',marginTop:8,padding:'0 2px'}}>
+            <button onClick={clear} style={{background:'none',border:'none',color:C.t2,fontSize:12,cursor:'pointer',textDecoration:'underline',fontFamily:'inherit'}}>Șterge</button>
+            <span style={{fontFamily:C.mono,fontSize:9,color:C.t3}}>{new Date().toLocaleString('ro-RO')}</span>
+          </div>
+        </div>
+        <EmpCTA label='Semnează și finalizează' disabled={!has} onClick={onDone} />
+      </div>
+    </div>
+  )
+}
+
+/* M6 — Raportare incident */
+function EmpRaporteaza({ onSend }) {
+  const [f,setF] = useState({ce:'',unde:'',sev:'Mediu'})
+  const sevC = s => ({['Scăzut']:C.teal,['Mediu']:C.amber,['Ridicat']:C.red}[s])
+  return (
+    <div style={{display:'flex',flexDirection:'column',gap:12}}>
+      <div style={{padding:'0 6px'}}>
+        <strong style={{fontSize:20,fontWeight:800,color:C.t0,letterSpacing:'-0.01em'}}>Raportează un incident</strong>
+        <div style={{fontSize:13,color:C.t2,marginTop:3}}>Rapid, chiar și fără semnal. Responsabilul SSM e notificat automat.</div>
+      </div>
+      <EmpCard>
+        <div>
+          <div style={{fontFamily:C.mono,fontSize:10,letterSpacing:'0.05em',textTransform:'uppercase',color:C.t3,marginBottom:6}}>Ce s-a întâmplat?</div>
+          <textarea value={f.ce} onChange={e=>setF({...f,ce:e.target.value})} rows={3} placeholder='Descrie pe scurt...'
+            style={{width:'100%',padding:'11px 13px',background:C.bg,border:`1px solid ${C.line}`,borderRadius:12,fontSize:14,color:C.t0,outline:'none',resize:'none',boxSizing:'border-box',fontFamily:'inherit',lineHeight:1.5}} />
+        </div>
+        <div>
+          <div style={{fontFamily:C.mono,fontSize:10,letterSpacing:'0.05em',textTransform:'uppercase',color:C.t3,marginBottom:6}}>Unde?</div>
+          <input value={f.unde} onChange={e=>setF({...f,unde:e.target.value})} placeholder='ex: Hala 2, lângă poarta B'
+            style={{width:'100%',padding:'11px 13px',background:C.bg,border:`1px solid ${C.line}`,borderRadius:12,fontSize:14,color:C.t0,outline:'none',boxSizing:'border-box',fontFamily:'inherit'}} />
+        </div>
+        <div>
+          <div style={{fontFamily:C.mono,fontSize:10,letterSpacing:'0.05em',textTransform:'uppercase',color:C.t3,marginBottom:6}}>Cât de grav?</div>
+          <div style={{display:'flex',gap:8}}>
+            {['Scăzut','Mediu','Ridicat'].map(s => (
+              <button key={s} onClick={()=>setF({...f,sev:s})}
+                style={{flex:1,minHeight:44,border:`2px solid ${f.sev===s?sevC(s):C.line}`,background:f.sev===s?'#FFFFFF':'#FAFAF8',borderRadius:12,fontSize:13,fontWeight:f.sev===s?800:500,color:f.sev===s?sevC(s):C.t2,cursor:'pointer',fontFamily:'inherit'}}>
+                {s}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div style={{border:`2px dashed ${C.lineHi}`,borderRadius:12,padding:'18px 14px',textAlign:'center',background:'#FAFAF8',cursor:'pointer'}}>
+          <div style={{fontSize:22,marginBottom:4}}>📷</div>
+          <div style={{fontSize:13,fontWeight:600,color:C.t0}}>Adaugă foto din teren</div>
+          <div style={{fontSize:11,color:C.t3}}>se atașează raportului · opțional</div>
+        </div>
+      </EmpCard>
+      <EmpCTA label='Trimite raportul' disabled={!f.ce.trim()||!f.unde.trim()} onClick={onSend} />
+    </div>
+  )
+}
+
+/* M8 — Programare medicina muncii */
+function EmpMedicina({ onBook, onBack, statusZone }) {
+  const zile = ['Lu 17','Ma 18','Mi 19','Jo 20','Vi 21']
+  const ore  = ['08:30','09:15','10:00','11:30','13:00','14:15']
+  const [zi,setZi]   = useState(null)
+  const [ora,setOra] = useState(null)
+  return (
+    <div style={{fontFamily:'Manrope, sans-serif',minHeight:'100vh',background:C.bg,display:'flex',flexDirection:'column',maxWidth:430,margin:'0 auto'}}>
+      {statusZone('medicina muncii')}
+      <div style={{padding:'8px 22px 4px',display:'flex',alignItems:'center',gap:10}}>
+        <button onClick={onBack} style={{background:'none',border:'none',fontSize:20,color:C.t0,cursor:'pointer',padding:0}}>←</button>
+        <strong style={{fontSize:17,fontWeight:800,color:C.t0}}>Programează controlul medical</strong>
+      </div>
+      <div style={{flex:1,overflowY:'auto',padding:16,display:'flex',flexDirection:'column',gap:14}}>
+        <div>
+          <div style={{fontFamily:C.mono,fontSize:10,letterSpacing:'0.05em',textTransform:'uppercase',color:C.t3,marginBottom:8}}>Alege ziua</div>
+          <div style={{display:'flex',gap:8,overflowX:'auto',paddingBottom:4}}>
+            {zile.map(z => (
+              <button key={z} onClick={()=>setZi(z)}
+                style={{minWidth:62,minHeight:56,border:`2px solid ${zi===z?'#16191C':C.line}`,background:zi===z?'#F7F6F3':'#FFFFFF',borderRadius:14,fontSize:13,fontWeight:zi===z?800:500,color:C.t0,cursor:'pointer',fontFamily:'inherit',flexShrink:0}}>
+                {z}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div>
+          <div style={{fontFamily:C.mono,fontSize:10,letterSpacing:'0.05em',textTransform:'uppercase',color:C.t3,marginBottom:8}}>Alege ora</div>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:8}}>
+            {ore.map(o => (
+              <button key={o} onClick={()=>setOra(o)}
+                style={{minHeight:44,border:`2px solid ${ora===o?'#16191C':C.line}`,background:ora===o?'#F7F6F3':'#FFFFFF',borderRadius:12,fontSize:14,fontWeight:ora===o?800:500,color:C.t0,cursor:'pointer',fontFamily:'inherit'}}>
+                {o}
+              </button>
+            ))}
+          </div>
+        </div>
+        {zi && ora && (
+          <EmpCard>
+            <strong style={{fontSize:15,fontWeight:800,color:C.t0}}>Confirmare programare</strong>
+            {[['Clinica','MedLife Titan · et. 2, cab. 14'],['Data',`${zi} August · ora ${ora}`],['Adu cu tine','CI + fișa de post (o trimitem noi clinicii)'],['Durata','~20 minute']].map(([k,v]) => (
+              <div key={k} style={{display:'flex',justifyContent:'space-between',gap:12}}>
+                <span style={{fontFamily:C.mono,fontSize:10,textTransform:'uppercase',letterSpacing:'0.05em',color:C.t3,flexShrink:0,paddingTop:2}}>{k}</span>
+                <span style={{fontSize:13,fontWeight:600,color:C.t0,textAlign:'right'}}>{v}</span>
+              </div>
+            ))}
+          </EmpCard>
+        )}
+      </div>
+      <div style={{padding:'0 16px 20px'}}>
+        <EmpCTA label='Confirmă programarea' disabled={!zi||!ora} onClick={()=>onBook(`${zi} · ${ora}`)} />
+      </div>
+    </div>
+  )
+}
+
+/* M9 — Documente */
+function EmpDocumente({ trainings, medBooked, user }) {
+  const [filter,setFilter] = useState('toate')
+  const docs = [
+    ...trainings.filter(t=>t.signed).map(t => ({ tip:'fisa', titlu:`Fișă instruire — ${t.label.split(' (')[0]}`, sub:'semnată · '+new Date().toLocaleDateString('ro-RO'), status:'la zi' })),
+    { tip:'fisa',    titlu:'Fișă instruire — PSI',        sub:'semnată · 02.06.2026',  status:'la zi' },
+    { tip:'medical', titlu:'Aviz medicina muncii',         sub:medBooked?`reprogramat: ${medBooked}`:'expiră în 12 zile', status:medBooked?'la zi':'expiră' },
+    { tip:'medical', titlu:'Fișă aptitudine — angajare',   sub:'emisă · 14.03.2025',    status:'la zi' },
+  ]
+  const filtered = docs.filter(d => filter==='toate' || (filter==='fise'&&d.tip==='fisa') || (filter==='medicale'&&d.tip==='medical'))
+  return (
+    <div style={{display:'flex',flexDirection:'column',gap:12}}>
+      <div style={{padding:'0 6px',display:'flex',justifyContent:'space-between',alignItems:'baseline'}}>
+        <strong style={{fontSize:20,fontWeight:800,color:C.t0,letterSpacing:'-0.01em'}}>Documentele tale</strong>
+        <span style={{fontFamily:C.mono,fontSize:10,color:C.green}}>● offline ok</span>
+      </div>
+      <div style={{display:'flex',gap:8}}>
+        {[['toate','Toate'],['fise','Fișe instruire'],['medicale','Medicale']].map(([id,l]) => (
+          <button key={id} onClick={()=>setFilter(id)}
+            style={{padding:'9px 14px',minHeight:40,border:`2px solid ${filter===id?'#16191C':C.line}`,background:filter===id?'#FFFFFF':'transparent',borderRadius:999,fontSize:13,fontWeight:filter===id?800:500,color:filter===id?C.t0:C.t2,cursor:'pointer',fontFamily:'inherit'}}>
+            {l}
+          </button>
+        ))}
+      </div>
+      {filtered.map((d,i) => (
+        <EmpCard key={i} style={{flexDirection:'row',alignItems:'center',gap:12}}>
+          <span style={{fontSize:22,flexShrink:0}}>{d.tip==='fisa'?'📄':'🩺'}</span>
+          <div style={{flex:1,minWidth:0}}>
+            <strong style={{fontSize:14,fontWeight:700,color:C.t0,display:'block'}}>{d.titlu}</strong>
+            <span style={{fontSize:12,color:C.t2}}>{d.sub}</span>
+          </div>
+          <EmpPill label={d.status} tone={d.status==='la zi'?'green':'amber'} />
+        </EmpCard>
+      ))}
+      <div style={{textAlign:'center',fontFamily:C.mono,fontSize:10,color:C.t3,padding:'6px 0'}}>toate documentele sunt salvate local · disponibile fără semnal</div>
+    </div>
+  )
+}
+
+/* ═══════════════════════════════════════
    MODUL: PLANUL SSM (C2 — mod consultant, sub 10 angajați)
 ═══════════════════════════════════════ */
 function ModPlanSSM({ firma, cons }) {
@@ -2328,11 +2849,12 @@ export default function App() {
   const width = useWidth()
   const isMobile = width < 900
 
-  const handleLogin    = (u) => { setUser(u); setScreen(appCfg ? 'app' : 'wizard') }
+  const handleLogin    = (u) => { setUser(u); setScreen(u.role==='angajat' ? 'employee' : (appCfg ? 'app' : 'wizard')) }
   const handleRegister = (u) => { setUser(u); setScreen('wizard') }
   const handleWizard   = (cfg) => { setAppCfg(cfg); setScreen('app') }
   const handleLogout   = ()  => { setUser(null); setAppCfg(null); setScreen('login') }
 
+  if (screen === 'employee') return <EmployeeApp user={user} onLogout={handleLogout} />
   if (screen === 'wizard') return <WizardCUI onFinish={handleWizard} />
   if (screen === 'app')    return <AppShell user={user} appCfg={appCfg} onLogout={handleLogout} />
 
