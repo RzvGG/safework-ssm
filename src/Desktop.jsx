@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { C, TOATE_INSTRUIRILE, getAngajati, LEGISLATIE_DB, MATERIALE_DB, TESTE_DB } from './data.js'
+import { C, TOATE_INSTRUIRILE, getAngajati, LEGISLATIE_DB, MATERIALE_DB, TESTE_DB, getStats } from './data.js'
 import { Icon, Logo, Card, Btn, TLink, Inp, Sel, Toggle, Pill, Ava, PBar, trafficColor, Note, Alert, Tabs, FChip, Table, TR, TD, Modal, Drawer, Toast, PageHead, Empty, SigPad } from './ui.jsx'
 
 const AZI = new Date()
@@ -20,6 +20,7 @@ export const DOCS_INIT = [
 ═══════════════════════════════════════ */
 function ModPanou({ user, firma, ind, docs, go, toast, med }) {
   const ANG = getAngajati(ind)
+  const S = getStats(firma)
   const nesemnate = docs.filter(d=>d.status==='Nesemnat').length
   const expirat = med.filter(m=>!m.apt).length
   const [showAng,setShowAng] = useState(false)
@@ -29,16 +30,16 @@ function ModPanou({ user, firma, ind, docs, go, toast, med }) {
     ...(nesemnate? [{ n:docs.find(d=>d.status==='Nesemnat').angajat, t:`Fișă nesemnată · ${docs.find(d=>d.status==='Nesemnat').nr}`, a:'Solicită semnătura', on:()=>go('documente',{sign:docs.find(d=>d.status==='Nesemnat').id}) }] : []),
   ]
   const kpi = [
-    { v:'28', l:'Angajați activi', a:'Vezi lista', on:()=>setShowAng(true) },
-    { v:'3', l:'Instruiri scadente', a:'Planifică', on:()=>go('instruiri'), tone:C.amber },
+    { v:String(S.N), l:'Angajați activi', a:'Vezi lista', on:()=>setShowAng(true) },
+    { v:String(S.scadente), l:'Instruiri scadente', a:'Planifică', on:()=>go('instruiri'), tone:C.amber },
     { v:String(expirat), l:'Aviz medical expirat', a:'Rezolvă', on:()=>go('medicina'), tone:expirat?C.red:C.t0 },
-    { v:'94%', l:'Conformitate generală', a:'Raport', on:()=>go('rapoarte'), tone:C.teal },
+    { v:S.conf+'%', l:'Conformitate generală', a:'Raport', on:()=>go('rapoarte'), tone:C.teal },
   ]
-  const status = [['Introductiv-general (IIG)',23],['La locul de muncă (ILM)',25],['Periodic (IP)',27],['PSI (prevenire incendii)',28]]
+  const status = [['Introductiv-general (IIG)',S.N-S.rest.introductiv],['La locul de muncă (ILM)',S.N-S.rest.loc_munca],['Periodic (IP)',S.N-S.rest.periodica],['PSI (prevenire incendii)',S.N]]
   return (
     <div style={{display:'flex',flexDirection:'column',gap:16}}>
       {showAng && (
-        <Modal title='Angajați activi' sub='28 în evidență · 5 afișați în demo' onClose={()=>setShowAng(false)} width={560}>
+        <Modal title='Angajați activi' sub={`${S.N} în evidență · ${ANG.length} afișați în demo`} onClose={()=>setShowAng(false)} width={560}>
           <Table cols={['Angajat','Post · Dept.','Instruire','Medical']}>
             {ANG.map(a => (
               <TR key={a.id}>
@@ -57,8 +58,8 @@ function ModPanou({ user, firma, ind, docs, go, toast, med }) {
           <div style={{fontSize:16,fontWeight:800,color:C.t0}}>Bună ziua, {user?.name?.split(/[\s.]/)[0]||'Manager'}</div>
           <div style={{fontSize:12,color:C.t2}}>{firma?.nume} · {AZI.toLocaleDateString('ro-RO',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div>
         </div>
-        <Pill label='3 scadențe apropiate' tone='amber' />
-        <Pill label='94% conformitate' tone='green' />
+        <Pill label={`${S.scadente} scadențe apropiate`} tone='amber' />
+        <Pill label={`${S.conf}% conformitate`} tone={S.conf>=90?'green':'amber'} />
         <Sel sm value={LUNA} onChange={()=>{}} options={[LUNA,'Trimestrul III 2026','An 2026']} />
       </div>
       <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:12}}>
@@ -74,7 +75,7 @@ function ModPanou({ user, firma, ind, docs, go, toast, med }) {
         <Card>
           <div style={{padding:'13px 18px',borderBottom:`1px solid ${C.line}`,fontSize:14,fontWeight:800,color:C.t0}}>Status instruiri</div>
           <div style={{padding:16,display:'flex',flexDirection:'column',gap:12}}>
-            {status.map(([l,d]) => { const t=28, p=Math.round(d/t*100), rest=t-d; return (
+            {status.map(([l,d]) => { const t=S.N, p=Math.round(d/t*100), rest=t-d; return (
               <div key={l}>
                 <div style={{display:'flex',justifyContent:'space-between',marginBottom:5,alignItems:'baseline'}}>
                   <span style={{fontSize:13,color:C.t0,fontWeight:600}}>{l}</span>
@@ -248,20 +249,22 @@ function Emitere({ ind, onDone }) {
 /* ═══════════════════════════════════════
    S11 · INSTRUIRI — cifre diferite per tip, context + link
 ═══════════════════════════════════════ */
-function ModInstruiri({ instrCfg, ind, toast, go }) {
+function ModInstruiri({ instrCfg, ind, firma, toast, go }) {
   const ANG = getAngajati(ind)
+  const S = getStats(firma)
   const [sel,setSel] = useState(null)
   const [plan,setPlan] = useState(false)
   const active = TOATE_INSTRUIRILE.filter(i=>(instrCfg[i.id]||{}).active)
-  const DEMO = { introductiv:[23,'5 angajați neinstruiți — toți angajați în august'], loc_munca:[25,'3 angajați neinstruiți'], periodica:[27,`1 angajat scadent — ${ANG[0].name}, 16 aug`], psi:[28,'Complet — următoarea scadență colectivă în octombrie'] }
-  const stat = (i,idx) => DEMO[i.id] || [Math.max(20,28-idx),`${idx} angajați neinstruiți`]
+  const pl = n => n===1?'1 angajat':`${n} angajați`
+  const DEMO = { introductiv:[S.N-S.rest.introductiv,`${pl(S.rest.introductiv)} neinstruiți — angajați în august`], loc_munca:[S.N-S.rest.loc_munca,`${pl(S.rest.loc_munca)} neinstruiți`], periodica:[S.N-S.rest.periodica,S.rest.periodica===1?`1 angajat scadent — ${ANG[0].name}, 16 aug`:`${S.rest.periodica} angajați scadenți — primul: ${ANG[0].name}, 16 aug`], psi:[S.N,'Complet — următoarea scadență colectivă în octombrie'] }
+  const stat = (i,idx) => DEMO[i.id] || [Math.max(1,S.N-idx),`${idx} angajați neinstruiți`]
   if (sel) {
     const [d,ctx] = stat(sel, active.indexOf(sel))
-    const restanti = ANG.slice(0, Math.max(1,28-d)).map((a,i)=>({...a,de:i===0?'16 aug':`${20+i} aug`}))
+    const restanti = ANG.slice(0, Math.min(ANG.length, Math.max(1,S.N-d))).map((a,i)=>({...a,de:i===0?'16 aug':`${20+i} aug`}))
     return (
       <div style={{display:'flex',flexDirection:'column',gap:16}}>
         <TLink label='← Înapoi la instruiri' onClick={()=>setSel(null)} color={C.t2} />
-        <PageHead title={sel.label} sub={sel.baza} action={<Btn label='Trimite reminder tuturor' icon='send' onClick={()=>toast(`Reminder trimis către ${restanti.length} angajați`)} />} />
+        <PageHead title={sel.label} sub={`${sel.baza} · ${S.N-d} restanți din ${S.N} (${restanti.length} afișați în demo)`} action={<Btn label='Trimite reminder tuturor' icon='send' onClick={()=>toast(`Reminder trimis către ${restanti.length} angajați`)} />} />
         <Card>
           <Table cols={['Angajat','Post · Dept.','Scadență','Acțiune']}>
             {restanti.map(a => (
@@ -284,18 +287,18 @@ function ModInstruiri({ instrCfg, ind, toast, go }) {
           footer={<><Btn label='Renunță' variant='outline' onClick={()=>setPlan(false)} /><Btn label='Planifică și trimite linkurile' onClick={()=>{setPlan(false);toast('Instruire planificată · linkurile pleacă automat cu 30 de zile înainte')}} /></>}>
           <div style={{display:'flex',flexDirection:'column',gap:12}}>
             <Sel label='Tip de instruire' value={active[0]?.label} onChange={()=>{}} options={active.map(i=>i.label)} />
-            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}><Inp label='Data' type='date' value='2026-08-25' onChange={()=>{}} /><Sel label='Angajați' value='Toți restanții (9)' onChange={()=>{}} options={['Toți restanții (9)','Toți angajații (28)','Selecție manuală']} /></div>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}><Inp label='Data' type='date' value='2026-08-25' onChange={()=>{}} /><Sel label='Angajați' value='Toți restanții (9)' onChange={()=>{}} options={[`Toți restanții (${S.rest.introductiv+S.rest.loc_munca+S.rest.periodica})`,`Toți angajații (${S.N})`,'Selecție manuală']} /></div>
             <Note label='Automat'>Instruirea periodică T4 se generează automat pe 01.10 — planificarea manuală e necesară doar pentru sesiuni suplimentare.</Note>
           </div>
         </Modal>
       )}
       <PageHead title='Instruiri SSM' sub={`${active.length} tipuri active · obligatorii conform legislației`} action={<Btn label='Planifică instruire' icon='calendar' onClick={()=>setPlan(true)} />} />
       <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
-        {active.map((i,idx) => { const [d,ctx]=stat(i,idx); const p=Math.round(d/28*100); const col=trafficColor(p); return (
+        {active.map((i,idx) => { const [d,ctx]=stat(i,idx); const p=Math.round(d/S.N*100); const col=trafficColor(p); return (
           <Card key={i.id} style={{padding:18}}>
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:12,marginBottom:12}}>
               <div style={{minWidth:0}}><div style={{fontSize:14,fontWeight:800,color:C.t0}}>{i.label}</div><div style={{fontSize:10,color:C.t2,fontFamily:C.mono,marginTop:3}}>{i.baza}</div></div>
-              <div style={{textAlign:'right',flexShrink:0}}><div style={{fontSize:24,fontWeight:800,color:col,lineHeight:1,letterSpacing:'-0.02em'}}>{p}%</div><div style={{fontSize:11,color:C.t2,fontFamily:C.mono}}>{d}/28</div></div>
+              <div style={{textAlign:'right',flexShrink:0}}><div style={{fontSize:24,fontWeight:800,color:col,lineHeight:1,letterSpacing:'-0.02em'}}>{p}%</div><div style={{fontSize:11,color:C.t2,fontFamily:C.mono}}>{d}/{S.N}</div></div>
             </div>
             <PBar val={p} color={col} />
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginTop:10,gap:8}}>
@@ -571,17 +574,18 @@ function ModStructura({ toast }) {
 /* ═══════════════════════════════════════
    S18 · AUDIT ITM — simulare de control, scor + lista de remediat
 ═══════════════════════════════════════ */
-function ModAudit({ docs, med, go, toast }) {
+function ModAudit({ docs, med, firma, go, toast }) {
+  const S = getStats(firma)
   const [run,setRun] = useState(false); const [ts,setTs] = useState('azi, 07:00')
   const nes = docs.filter(d=>d.status==='Nesemnat').length, exp = med.filter(m=>!m.apt).length
   const items = [
-    {ok:true,t:'Fișe de instruire semnate și arhivate',s:`${28-nes}/28 complete`},
+    {ok:true,t:'Fișe de instruire semnate și arhivate',s:`${S.N-nes}/${S.N} complete`},
     {ok:true,t:'Procese verbale instruire colectivă PSI',s:'La zi'},
     ...(nes?[{ok:false,t:`${nes} fișe nesemnate mai vechi de 48h`,a:'Rezolvă',on:()=>go('documente')}]:[]),
     ...(exp?[{ok:false,t:`${exp} aviz medical expirat — ${med.find(m=>!m.apt)?.name}`,a:'Rezolvă',on:()=>go('medicina')}]:[]),
     {ok:false,t:'Evaluarea de riscuri nu a fost revizuită în ultimele 12 luni',a:'Planifică',on:()=>toast('Revizuirea evaluării de riscuri a fost planificată · SEPP notificat')},
   ]
-  const bad = items.filter(i=>!i.ok).length, score = 100 - bad*2 - nes - exp
+  const bad = items.filter(i=>!i.ok).length, score = Math.max(0, S.conf - bad*2 - nes - exp)
   const rerun = async () => { setRun(true); await new Promise(r=>setTimeout(r,1300)); setRun(false); setTs('acum, '+AZI.toLocaleTimeString('ro-RO',{hour:'2-digit',minute:'2-digit'})); toast('Verificare finalizată') }
   return (
     <div style={{display:'flex',flexDirection:'column',gap:16}}>
@@ -753,7 +757,7 @@ export function AppShell({ user, appCfg, onLogout }) {
       {id:'panou',label:'Panou',icon:'panel'},
       ...((firma?.angajati||10)<10?[{id:'plan',label:'Planul tău SSM',icon:'shield'}]:[]),
       {id:'documente',label:'Documente',icon:'file',badge:nes},
-      {id:'instruiri',label:'Instruiri',icon:'book',badge:3},
+      {id:'instruiri',label:'Instruiri',icon:'book',badge:getStats(firma).scadente},
       {id:'medicina',label:'Med. muncii',icon:'med',badge:exp},
       ...(modules.nearMiss?[{id:'nearmiss',label:'Incidente',icon:'alert'}]:[]),
     ]},
@@ -765,14 +769,14 @@ export function AppShell({ user, appCfg, onLogout }) {
       case 'panou': return <ModPanou user={user} firma={firma} ind={ind} docs={docs} med={med} go={go} toast={toast}/>
       case 'plan': return <ModPlanSSM firma={firma} go={go} toast={toast}/>
       case 'documente': return <ModDocumente key={JSON.stringify(params)} ind={ind} docs={docs} setDocs={setDocs} params={params} toast={toast} go={go}/>
-      case 'instruiri': return <ModInstruiri instrCfg={instrCfg} ind={ind} toast={toast} go={go}/>
+      case 'instruiri': return <ModInstruiri instrCfg={instrCfg} ind={ind} firma={firma} toast={toast} go={go}/>
       case 'medicina': return <ModMedicina med={med} setMed={setMed} toast={toast}/>
       case 'materiale': return <ModMateriale toast={toast}/>
       case 'legislatie': return <ModLegislatie user={user} toast={toast}/>
       case 'rapoarte': return <ModRapoarte toast={toast}/>
       case 'arhiva': return <ModArhiva toast={toast}/>
       case 'structura': return <ModStructura toast={toast}/>
-      case 'audit': return <ModAudit docs={docs} med={med} go={go} toast={toast}/>
+      case 'audit': return <ModAudit docs={docs} med={med} firma={firma} go={go} toast={toast}/>
       case 'nearmiss': return <ModNearMiss toast={toast}/>
       case 'setari': return <ModSetari key={JSON.stringify(params)} modules={modules} setModules={setModules} instrCfg={instrCfg} setInstrCfg={setInstrCfg} ind={ind} firma={firma} toast={toast} params={params}/>
       default: return null

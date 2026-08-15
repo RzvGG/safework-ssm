@@ -243,3 +243,16 @@ export const TESTE_DB = [
     { q:'Verificarea însușirii cunoștințelor după IS este:', a:['Opțională','Obligatorie','Necesară doar la cerere'], c:1 },
   ]},
 ]
+
+/* ═══════════════════════════════════════
+   STATISTICI DEMO DERIVATE DIN FIRMĂ — cifrele urmăresc numărul real de angajați
+═══════════════════════════════════════ */
+export const getStats = (firma) => {
+  const N = Math.max(1, parseInt(firma?.angajati) || 28)
+  const r = { introductiv: Math.min(N, Math.ceil(N*0.18)), loc_munca: Math.min(N, Math.ceil(N*0.11)), periodica: Math.max(1, Math.round(N*0.036)), psi: 0 }
+  const totalRest = r.introductiv + r.loc_munca + r.periodica
+  const conf = Math.max(0, Math.round(100 - totalRest / (4*N) * 100))
+  const scadente = Math.max(1, Math.round(N*0.11))
+  const semnate = N - r.periodica
+  return { N, rest:r, conf, scadente, semnate }
+}

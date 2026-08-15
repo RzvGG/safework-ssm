@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { C, MATERIALE_DB, TESTE_DB, getAngajati } from './data.js'
+import { C, MATERIALE_DB, TESTE_DB, getAngajati, getStats } from './data.js'
 import { Icon, Logo, Btn, TLink, Pill, Ava, PBar, Note, Toast, SigPad, Toggle, Sel } from './ui.jsx'
 import { DOCS_INIT } from './Desktop.jsx'
 
@@ -240,6 +240,7 @@ export function ManagerMobile({ user, appCfg, onLogout }) {
   const [docs,setDocs] = useState(DOCS_INIT)
   const firma = appCfg?.firma
   const ANG = getAngajati(appCfg?.cons?.ind||'productie')
+  const S = getStats(firma)
   const [tst,setTst] = useState(null)
   const toast = m => setTst({m,k:Date.now()})
   const [dfilter,setDfilter] = useState('nes')
@@ -253,8 +254,8 @@ export function ManagerMobile({ user, appCfg, onLogout }) {
       <div style={{display:'flex',flexDirection:'column',gap:12}}>
         <div style={{padding:'0 6px'}}><strong style={{fontSize:24,fontWeight:800,letterSpacing:'-0.02em'}}>Panou</strong><div style={{fontSize:13,color:C.t2}}>{firma?.nume||'Firma dvs.'} · {new Date().toLocaleDateString('ro-RO',{day:'numeric',month:'short'}).replace('.','')}</div></div>
         <MCard style={{flexDirection:'row',alignItems:'center',gap:14}}>
-          <div style={{fontSize:34,fontWeight:800,color:C.teal,letterSpacing:'-0.02em'}}>94%</div>
-          <div style={{flex:1,display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:6}}>{[['28','Angajați'],['3','Scadențe'],['1','Expirat']].map(([v,l]) => <div key={l} style={{textAlign:'center',background:C.bg,borderRadius:10,padding:'8px 4px'}}><div style={{fontSize:18,fontWeight:800}}>{v}</div><div style={{fontSize:10,color:C.t2}}>{l}</div></div>)}</div>
+          <div style={{fontSize:34,fontWeight:800,color:S.conf>=90?C.teal:'oklch(0.45 0.12 75)',letterSpacing:'-0.02em'}}>{S.conf}%</div>
+          <div style={{flex:1,display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:6}}>{[[String(S.N),'Angajați'],[String(S.scadente),'Scadențe'],['1','Expirat']].map(([v,l]) => <div key={l} style={{textAlign:'center',background:C.bg,borderRadius:10,padding:'8px 4px'}}><div style={{fontSize:18,fontWeight:800}}>{v}</div><div style={{fontSize:10,color:C.t2}}>{l}</div></div>)}</div>
         </MCard>
         <div style={{fontFamily:C.mono,fontSize:10,letterSpacing:'0.08em',textTransform:'uppercase',color:C.t3,padding:'6px 6px 0',fontWeight:600}}>De rezolvat azi</div>
         <MCard><div style={{display:'flex',gap:12,alignItems:'center'}}><Ava name={ANG[0].name} size={36}/><div style={{flex:1}}><div style={{fontSize:14,fontWeight:700}}>{ANG[0].name}</div><div style={{fontSize:12,color:C.t2}}>Instruirea periodică expiră mâine</div></div></div><CTA label='Trimite link de instruire' onClick={()=>toast(`Link de instruire trimis către ${ANG[0].name}`)}/></MCard>
@@ -279,18 +280,18 @@ export function ManagerMobile({ user, appCfg, onLogout }) {
       <div style={{display:'flex',flexDirection:'column',gap:12}}>
         <Header title='Echipă' />
         <div style={{position:'relative'}}><span style={{position:'absolute',left:14,top:'50%',transform:'translateY(-50%)',color:C.t3}}><Icon name='search' size={16}/></span><input placeholder='Caută angajat…' style={{width:'100%',padding:'12px 14px 12px 40px',border:`1px solid ${C.line}`,borderRadius:12,fontSize:15,fontFamily:'inherit',background:C.white,boxSizing:'border-box',outline:'none'}}/></div>
-        <div style={{display:'flex',gap:8}}>{[['probleme','Cu probleme',probleme.length],['toti','Toți',28]].map(([id,l,n]) => <button key={id} onClick={()=>setEfilter(id)} style={{padding:'9px 14px',minHeight:40,border:`2px solid ${efilter===id?C.primary:C.line}`,background:efilter===id?C.white:'transparent',borderRadius:999,fontSize:13,fontWeight:efilter===id?800:500,cursor:'pointer',fontFamily:'inherit'}}>{l} <span style={{fontFamily:C.mono,fontSize:11,color:C.t3}}>· {n}</span></button>)}</div>
+        <div style={{display:'flex',gap:8}}>{[['probleme','Cu probleme',probleme.length],['toti','Toți',S.N]].map(([id,l,n]) => <button key={id} onClick={()=>setEfilter(id)} style={{padding:'9px 14px',minHeight:40,border:`2px solid ${efilter===id?C.primary:C.line}`,background:efilter===id?C.white:'transparent',borderRadius:999,fontSize:13,fontWeight:efilter===id?800:500,cursor:'pointer',fontFamily:'inherit'}}>{l} <span style={{fontFamily:C.mono,fontSize:11,color:C.t3}}>· {n}</span></button>)}</div>
         {(efilter==='probleme'?probleme:[...probleme,...ANG.filter(a=>!probleme.find(p=>p[0]===a.name)).map(a=>[a.name,'La zi'])]).map(([n,s],i) => (
           <Row key={i} title={n} sub={s} onClick={()=>toast(`Profil ${n} — dosarul complet e disponibil pe desktop`)} right={<Ava name={n} size={30}/>} />
         ))}
-        {efilter==='probleme' && <div style={{textAlign:'center',fontSize:12,color:C.t3,padding:'4px 0'}}>Restul de {28-probleme.length} angajați sunt la zi</div>}
+        {efilter==='probleme' && <div style={{textAlign:'center',fontSize:12,color:C.t3,padding:'4px 0'}}>Restul de {S.N-probleme.length} angajați sunt la zi</div>}
       </div>
     ),
     meniu: (
       <div style={{display:'flex',flexDirection:'column',gap:12}}>
         <MCard style={{flexDirection:'row',alignItems:'center',gap:12}}><Ava name={user?.name||'M'} size={42} mono/><div style={{flex:1,minWidth:0}}><div style={{fontSize:15,fontWeight:800,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{user?.name}</div><div style={{fontSize:12,color:C.t2}}>Manager SSM · {firma?.nume}</div></div><span style={{fontFamily:C.mono,fontSize:10,border:`1px solid ${C.lineHi}`,borderRadius:5,padding:'2px 6px'}}>RO</span></MCard>
-        <MCard style={{background:C.primary,color:'#fff'}}><div style={{fontFamily:C.mono,fontSize:10,letterSpacing:'0.08em',textTransform:'uppercase',color:'#8A8F95'}}>Dosar control ITM</div><div style={{fontSize:14,fontWeight:700}}>26 fișe semnate · 5 avize · 2 PV-uri PSI</div><button onClick={()=>toast('Dosar ITM generat — descărcarea a început')} style={{background:'#fff',color:C.t0,border:'none',padding:'12px',borderRadius:12,fontSize:14,fontWeight:800,cursor:'pointer',fontFamily:'inherit',display:'flex',gap:8,alignItems:'center',justifyContent:'center',minHeight:48}}><Icon name='download' size={16}/>Generează dosarul (PDF)</button></MCard>
-        <Row title='Instruiri' right={<Pill label='3 scadente' tone='amber' sm/>} onClick={()=>{setEfilter('probleme');setTab('echipa')}} />
+        <MCard style={{background:C.primary,color:'#fff'}}><div style={{fontFamily:C.mono,fontSize:10,letterSpacing:'0.08em',textTransform:'uppercase',color:'#8A8F95'}}>Dosar control ITM</div><div style={{fontSize:14,fontWeight:700}}>{S.semnate} fișe semnate · {ANG.length} avize · 2 PV-uri PSI</div><button onClick={()=>toast('Dosar ITM generat — descărcarea a început')} style={{background:'#fff',color:C.t0,border:'none',padding:'12px',borderRadius:12,fontSize:14,fontWeight:800,cursor:'pointer',fontFamily:'inherit',display:'flex',gap:8,alignItems:'center',justifyContent:'center',minHeight:48}}><Icon name='download' size={16}/>Generează dosarul (PDF)</button></MCard>
+        <Row title='Instruiri' right={<Pill label={`${S.scadente} scadente`} tone='amber' sm/>} onClick={()=>{setEfilter('probleme');setTab('echipa')}} />
         <Row title='Medicină muncii' right={<Pill label='1 expirat' tone='red' sm/>} onClick={()=>{setEfilter('probleme');setTab('echipa')}} />
         <Row title='Rapoarte' onClick={()=>setSub('rapoarte')} />
         <Row title='Setări' onClick={()=>setSub('setari')} />

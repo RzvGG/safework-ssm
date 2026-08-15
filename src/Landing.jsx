@@ -66,7 +66,7 @@ export function Landing({ onLogin, onStart }) {
         <div style={{marginTop:18}}><Btn label='Începe gratuit — 5 minute' full size='lg' onClick={onStart} /></div>
         <div style={{fontSize:12,color:C.t3,marginTop:8,textAlign:'center'}}>Fără card bancar · date preluate din ONRC</div>
         <div style={{display:'flex',gap:22,marginTop:24,padding:'16px 0',borderTop:`1px solid ${C.line}`,borderBottom:`1px solid ${C.line}`}}>
-          {[['2.400+','firme active'],['98%','controale fără sancțiuni']].map(([v,l]) => <div key={l}><div style={{fontSize:22,fontWeight:800,color:C.t0}}>{v}</div><div style={{fontSize:12,color:C.t2}}>{l}</div></div>)}
+          {[['HG 259/2022','fișă electronică valabilă legal'],['5 min','configurare, fără card']].map(([v,l]) => <div key={l}><div style={{fontSize:22,fontWeight:800,color:C.t0}}>{v}</div><div style={{fontSize:12,color:C.t2}}>{l}</div></div>)}
         </div>
         <div style={{marginTop:22}}><HeroMock compact /></div>
         <div style={{marginTop:28}}>
@@ -120,7 +120,7 @@ export function Landing({ onLogin, onStart }) {
           <HeroMock />
         </div>
         <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:16,marginTop:56,paddingTop:28,borderTop:`1px solid ${C.line}`}}>
-          {[['2.400+','Firme active'],['98%','Controale ITM fără sancțiuni'],['45.000+','Fișe semnate electronic'],['5 min','Configurare completă']].map(([v,l]) => (
+          {[['HG 259/2022','Fișă electronică valabilă legal'],['Anexa 11','Model legal aplicat automat'],['30 · 14 · 7 · 1','Zile — alerte înainte de termen'],['5 min','Configurare, fără card bancar']].map(([v,l]) => (
             <div key={l}><div style={{fontSize:28,fontWeight:800,letterSpacing:'-0.02em'}}>{v}</div><div style={{fontFamily:C.mono,fontSize:10,letterSpacing:'0.06em',textTransform:'uppercase',color:C.t3,marginTop:4}}>{l}</div></div>
           ))}
         </div>
