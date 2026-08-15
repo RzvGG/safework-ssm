@@ -63,10 +63,10 @@ export function Landing({ onLogin, onStart }) {
         <span style={{fontFamily:C.mono,fontSize:10,letterSpacing:'0.08em',textTransform:'uppercase',color:C.teal,fontWeight:600}}>Conform HG 259/2022</span>
         <h1 style={{margin:'8px 0 10px',fontSize:30,fontWeight:800,letterSpacing:'-0.02em',lineHeight:1.12,color:C.t0}}>Aplicație SSM pentru firme din România</h1>
         <p style={{margin:0,fontSize:15,lineHeight:1.6,color:C.t1}}>Instruiri semnate pe telefon, fișe generate automat, dosar pregătit pentru controlul ITM.</p>
-        <div style={{marginTop:18}}><Btn label='Începe gratuit — 5 minute' full size='lg' onClick={onStart} /></div>
-        <div style={{fontSize:12,color:C.t3,marginTop:8,textAlign:'center'}}>Fără card bancar · date preluate din ONRC</div>
-        <div style={{display:'flex',gap:22,marginTop:24,padding:'16px 0',borderTop:`1px solid ${C.line}`,borderBottom:`1px solid ${C.line}`}}>
-          {[['HG 259/2022','fișă electronică valabilă legal'],['5 min','configurare, fără card']].map(([v,l]) => <div key={l}><div style={{fontSize:22,fontWeight:800,color:C.t0}}>{v}</div><div style={{fontSize:12,color:C.t2}}>{l}</div></div>)}
+        <div style={{marginTop:18}}><Btn label='Începe — 5 minute' full size='lg' onClick={onStart} /></div>
+        <div style={{fontSize:12,color:C.t3,marginTop:8,textAlign:'center'}}>Datele firmei se preiau automat din ONRC</div>
+        <div style={{display:'flex',flexDirection:'column',gap:10,marginTop:24,padding:'16px 0',borderTop:`1px solid ${C.line}`,borderBottom:`1px solid ${C.line}`}}>
+          {['Instruiri IIG · ILM · IP · PSI, cu teste incluse','Fișe generate automat după modelul Anexa 11','Alerte automate înainte de fiecare termen legal','Dosar pentru controlul ITM, la un click'].map(t => <div key={t} style={{display:'flex',gap:10,alignItems:'center'}}><span style={{width:20,height:20,borderRadius:999,background:C.green,color:'#fff',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}><Icon name='check' size={11} stroke={2.8}/></span><span style={{fontSize:14,color:C.t1}}>{t}</span></div>)}
         </div>
         <div style={{marginTop:22}}><HeroMock compact /></div>
         <div style={{marginTop:28}}>
@@ -82,7 +82,7 @@ export function Landing({ onLogin, onStart }) {
         <footer style={{marginTop:32,padding:'20px 0 8px',borderTop:`1px solid ${C.line}`,fontSize:11,color:C.t3,lineHeight:1.6}}>SafeWork SSM este un instrument de suport și nu înlocuiește un SEPP autorizat. Responsabilitatea legală rămâne la angajator conform L.319/2006.</footer>
       </main>
       <div style={{position:'fixed',left:0,right:0,bottom:0,background:C.white,borderTop:`1px solid ${C.line}`,padding:'10px 16px calc(12px + env(safe-area-inset-bottom))',display:'flex',alignItems:'center',justifyContent:'space-between',gap:12,zIndex:20}}>
-        <div><div style={{fontSize:13,fontWeight:800,color:C.t0}}>Gratuit</div><div style={{fontSize:11,color:C.t2}}>configurare 5 min</div></div>
+        <div><div style={{fontSize:13,fontWeight:800,color:C.t0}}>Începe cu CUI-ul firmei</div><div style={{fontSize:11,color:C.t2}}>configurare în 5 minute</div></div>
         <Btn label='Începe' size='md' onClick={onStart} iconRight='arrowR' />
       </div>
     </div>
@@ -100,7 +100,7 @@ export function Landing({ onLogin, onStart }) {
           </nav>
           <div style={{marginLeft:'auto',display:'flex',gap:10,alignItems:'center'}}>
             <button onClick={onLogin} style={{background:'none',border:'none',fontSize:13,fontWeight:700,color:C.t0,cursor:'pointer',fontFamily:'inherit',padding:'8px 10px'}}>Autentificare</button>
-            <Btn label='Începe gratuit' size='sm' onClick={onStart} />
+            <Btn label='Începe' size='sm' onClick={onStart} />
           </div>
         </div>
       </header>
@@ -110,19 +110,22 @@ export function Landing({ onLogin, onStart }) {
           <div>
             <span style={{fontFamily:C.mono,fontSize:11,letterSpacing:'0.08em',textTransform:'uppercase',color:C.teal,fontWeight:600}}>Conform HG 1425/2006 · HG 259/2022</span>
             <h1 style={{margin:'12px 0 14px',fontSize:44,fontWeight:800,letterSpacing:'-0.025em',lineHeight:1.08}}>Aplicație SSM pentru firme din România</h1>
-            <p style={{margin:0,fontSize:17,lineHeight:1.6,color:C.t1,maxWidth:520}}>Instruiri SSM online semnate pe telefon, fișe de instruire electronice generate automat și dosar pregătit oricând pentru controlul ITM. Fără dosare, fără Excel.</p>
+            <p style={{margin:0,fontSize:17,lineHeight:1.6,color:C.t1,maxWidth:520}}>Instruiri SSM online semnate pe telefon, fișe de instruire electronice generate automat și dosar pregătit oricând pentru controlul ITM.</p>
             <div style={{display:'flex',gap:12,marginTop:24,alignItems:'center',flexWrap:'wrap'}}>
-              <Btn label='Începe gratuit — 5 minute' size='lg' onClick={onStart} />
+              <Btn label='Începe — 5 minute' size='lg' onClick={onStart} />
               <a href='#cum-functioneaza' style={{fontSize:14,fontWeight:700,color:C.t0,textDecoration:'none',display:'inline-flex',gap:6,alignItems:'center'}}>Vezi cum funcționează <Icon name='arrowR' size={15}/></a>
             </div>
-            <div style={{fontSize:12,color:C.t3,marginTop:12}}>Fără card bancar · datele firmei se preiau automat din ONRC</div>
+            <div style={{fontSize:12,color:C.t3,marginTop:12}}>Datele firmei se preiau automat din ONRC</div>
           </div>
           <HeroMock />
         </div>
-        <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:16,marginTop:56,paddingTop:28,borderTop:`1px solid ${C.line}`}}>
-          {[['HG 259/2022','Fișă electronică valabilă legal'],['Anexa 11','Model legal aplicat automat'],['30 · 14 · 7 · 1','Zile — alerte înainte de termen'],['5 min','Configurare, fără card bancar']].map(([v,l]) => (
-            <div key={l}><div style={{fontSize:28,fontWeight:800,letterSpacing:'-0.02em'}}>{v}</div><div style={{fontFamily:C.mono,fontSize:10,letterSpacing:'0.06em',textTransform:'uppercase',color:C.t3,marginTop:4}}>{l}</div></div>
+        <div style={{marginTop:56,paddingTop:28,borderTop:`1px solid ${C.line}`}}>
+          <div style={{fontFamily:C.mono,fontSize:10,letterSpacing:'0.08em',textTransform:'uppercase',color:C.t3,marginBottom:14,fontWeight:600}}>Ce primești din prima zi</div>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:16}}>
+          {['Instruiri IIG · ILM · IP · PSI, cu teste incluse','Fișe generate automat după modelul Anexa 11','Alerte automate înainte de fiecare termen legal','Dosar pentru controlul ITM, la un click'].map(t => (
+            <div key={t} style={{display:'flex',gap:10,alignItems:'flex-start'}}><span style={{width:22,height:22,borderRadius:999,background:C.green,color:'#fff',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,marginTop:1}}><Icon name='check' size={12} stroke={2.8}/></span><span style={{fontSize:14,color:C.t1,lineHeight:1.5}}>{t}</span></div>
           ))}
+          </div>
         </div>
       </Sec>
 
@@ -200,8 +203,8 @@ export function Landing({ onLogin, onStart }) {
 
       <Sec id='legislatie'>
         <div style={{background:C.primary,borderRadius:20,padding:'44px 40px',color:'#fff',display:'flex',justifyContent:'space-between',alignItems:'center',gap:24,flexWrap:'wrap'}}>
-          <div><div style={{fontSize:26,fontWeight:800,letterSpacing:'-0.02em'}}>Pune SSM-ul firmei în regulă azi</div><div style={{fontSize:14,color:'#D5D2CA',marginTop:6}}>Configurare în 5 minute, gratuit. Fără card bancar.</div></div>
-          <button onClick={onStart} style={{background:'#fff',color:C.t0,border:'none',padding:'14px 26px',borderRadius:12,fontSize:15,fontWeight:800,cursor:'pointer',fontFamily:'inherit'}}>Începe gratuit</button>
+          <div><div style={{fontSize:26,fontWeight:800,letterSpacing:'-0.02em'}}>Pune SSM-ul firmei în regulă azi</div><div style={{fontSize:14,color:'#D5D2CA',marginTop:6}}>Configurare în 5 minute, pornind de la CUI-ul firmei.</div></div>
+          <button onClick={onStart} style={{background:'#fff',color:C.t0,border:'none',padding:'14px 26px',borderRadius:12,fontSize:15,fontWeight:800,cursor:'pointer',fontFamily:'inherit'}}>Începe acum</button>
         </div>
       </Sec>
 

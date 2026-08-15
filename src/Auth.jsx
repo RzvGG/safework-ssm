@@ -23,11 +23,6 @@ function Branding() {
             </div>
           ))}
         </div>
-        <div style={{borderTop:'1px solid #2A2E33',paddingTop:18,display:'flex',gap:28}}>
-          {[['HG 259/2022','fișă electronică legală'],['5 min','configurare'],['0 lei','fără card bancar']].map(([v,l]) => (
-            <div key={l}><div style={{fontSize:19,fontWeight:800,color:'#FFFFFF'}}>{v}</div><div style={{fontFamily:C.mono,fontSize:10,color:'#8A8F95',textTransform:'uppercase',letterSpacing:'0.05em',marginTop:3}}>{l}</div></div>
-          ))}
-        </div>
       </div>
     </div>
   )
