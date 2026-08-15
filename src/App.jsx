@@ -983,9 +983,9 @@ function ModDashboard({ firma, modules, instruiriCfg, ind }) {
           <div style={{padding:'13px 18px',borderBottom:`1px solid ${C.line}`,fontSize:13,fontWeight:700,color:C.t0}}>📚 Status instruiri</div>
           <div style={{padding:16,display:'flex',flexDirection:'column',gap:11}}>
             {actives.slice(0,5).map((i,idx) => {
-              const d = 23 + idx * 2; const t = 28
+              const t = 28; const d = Math.min(23 + idx * 2, t)
               const p = Math.round(d/t*100)
-              const col = p===100?C.teal:p>=80?C.primary:C.amber
+              const col = p===100?C.green:p>=80?C.green:p>=60?C.amber:C.red
               return (
                 <div key={idx}>
                   <div style={{display:'flex',justifyContent:'space-between',marginBottom:4}}>
@@ -1133,8 +1133,8 @@ function ModInstruiri({ instruiriCfg, modules, ind }) {
           <div key={group}>
             <div style={{fontSize:11,fontWeight:700,color:C.t2,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:10}}>{group} conform legislației</div>
             {list.map((i,idx) => {
-              const d = 23+idx; const t = 28; const p = Math.round(d/t*100)
-              const col = p===100?C.teal:p>=80?C.primary:p>=60?C.amber:C.red
+              const t = 28; const d = Math.min(23+idx, t); const p = Math.round(d/t*100)
+              const col = p>=80?C.green:p>=60?C.amber:C.red
               const pending = ANG.filter((_,ai) => !semnate[`${active.indexOf(i)}_${ANG[ai].name}`]).length
               return (
                 <Card key={idx} onClick={()=>setSel(active.indexOf(i))} style={{padding:18,cursor:'pointer',marginBottom:10}}>
